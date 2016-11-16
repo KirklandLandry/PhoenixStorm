@@ -16,16 +16,32 @@ function Player:new ()
 	o.gunSpriteSheet = love.graphics.newImage("assets/sprites/64x32playerGunsSpritesheet.png")
 	o.gunSpriteSheet:setFilter("nearest", "nearest")
 
-	local gunSpriteSheetWidth = o.gunSpriteSheet:getWidth()
-	local gunSpriteSheetHeight = o.gunSpriteSheet:getHeight()
+	o.gunSpriteSheetWidth = o.gunSpriteSheet:getWidth()
+	o.gunSpriteSheetHeight = o.gunSpriteSheet:getHeight()
 
-	o.gunSpriteSheetQuads = {
+	o.gunSpriteSheetQuads = {}
+	o.gunSpriteSheetQuads["lowerLeft"] = love.graphics.newQuad(0, 0, 16, 32, o.gunSpriteSheetWidth, o.gunSpriteSheetHeight)
+	o.gunSpriteSheetQuads["lowerRight"] = love.graphics.newQuad(16, 0, 16, 32, o.gunSpriteSheetWidth, o.gunSpriteSheetHeight)
+	o.gunSpriteSheetQuads["upperLeft"] = love.graphics.newQuad(32, 0, 16, 32, o.gunSpriteSheetWidth, o.gunSpriteSheetHeight)
+	o.gunSpriteSheetQuads["upperRight"] = love.graphics.newQuad(48, 0, 16, 32, o.gunSpriteSheetWidth, o.gunSpriteSheetHeight)
 
-	}
-	o.gunSpriteSheetQuads["lowerLeft"] = love.graphics.newQuad(0, 0, 0, 32, gunSpriteSheetWidth, gunSpriteSheetHeight)
+	o.guns = {}
+	o.guns["lowerLeft"] = newGun("lowerLeft", -o.shipWidth/2, 0)
+	o.guns["lowerRight"] = newGun("lowerRight", o.shipWidth/2, 0)
+	o.guns["upperLeft"] = newGun("upperLeft", -o.shipWidth/2 + 16, -48)
+	o.guns["upperRight"] = newGun("upperRight", o.shipWidth/2 - 16, -48)
+
 
 	return o
 end
+
+function newGun(name, _xOffset, _yOffset)
+	return {
+		quadIndex = name,
+		xOffset = _xOffset,
+		yOffset = _yOffset
+	}
+end 
 
 function Player:update(dt)
 
@@ -36,14 +52,19 @@ function Player:update(dt)
 end 
 
 function Player:draw()
+	-- the centre of the ship for reference
+	local centre = self:getCentre()
 	-- draw the player sprite
 	love.graphics.draw(self.shipSprite, self.x, self.y)
 	-- draw the player hit circle
 	love.graphics.setColor(255,0,0)
-	love.graphics.circle("fill", self:getCentre().x, self:getCentre().y, self.shipHitRadius)
+	love.graphics.circle("fill", centre.x, centre.y, self.shipHitRadius)
 	resetColor()
 	-- draw the guns 
-
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerLeft"]	, centre.x - 16 + self.guns["lowerLeft"].xOffset 	, centre.y + self.guns["lowerLeft"].yOffset)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerRight"]	, centre.x 		+ self.guns["lowerRight"].xOffset 	, centre.y + self.guns["lowerRight"].yOffset)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperLeft"]	, centre.x - 16 + self.guns["upperLeft"].xOffset 	, centre.y + self.guns["upperLeft"].yOffset)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperRight"]	, centre.x 		+ self.guns["upperRight"].xOffset 	, centre.y + self.guns["upperRight"].yOffset)
 end 
 
 function Player:updatePosition(dt)

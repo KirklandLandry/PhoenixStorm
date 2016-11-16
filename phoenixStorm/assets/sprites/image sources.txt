@@ -1,0 +1,7 @@
+64x32playerGunsSpritesheet,
+96x96playerShip,
+player guns stacked,
+SpaceArtPublish
+http://opengameart.org/content/space-game-art-pack-extended
+
+
