@@ -3,7 +3,6 @@ local keys = {}
 
 -- key press callback
 function love.keypressed(key)
-	print(key, string.byte(key), keyToSwappedMap[key])
     keys[key] = {down = true, held = false} 
 end
 

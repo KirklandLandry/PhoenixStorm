@@ -5,6 +5,7 @@ require "input"
 require "queue"
 require "stack"
 require "sound"
+require "player"
 
 -- this is the actual physical window size 
 screenWidth = nil
