@@ -1,5 +1,9 @@
+-- todo: make player guns (back OR front) rotate in circle? extra, do once complete
+
+
 local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver"}
 local gameState = nil
+
 
 
 local player = nil 
@@ -11,11 +15,8 @@ function loadGame()
 	gameState = Stack:new()
 	gameState:push(GAME_STATES.title)
 
-
 	player = Player:new()
-
 	bulletManager = BulletManager:new()
-
 end
 
 
@@ -25,9 +26,7 @@ function updateGame(dt)
 	if getKeyDown("escape") then love.event.quit() end 
 
 	bulletManager:updateBullets(dt)
-
 	player:update(dt)
-
 end
 
 -- BASE DRAW 

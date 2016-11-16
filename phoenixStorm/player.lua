@@ -9,7 +9,13 @@ function Player:new ()
 	o.moveSpeed = 310
 	o.originalMoveSpeed = 310
 	o.firingMoveSpeed = o.originalMoveSpeed * 0.55
+	
 	o.currentlyFiring = false
+	o.bulletSpeed = 650
+	o.fireRate = 0.08
+	o.fireTimer = Timer:new(o.fireRate, TimerModes.single)
+	o.canFire = true 
+
 	o.shipHitRadius = 5
 	o.shipSprite = love.graphics.newImage("assets/sprites/96x96playerShip.png")
 	o.shipSprite:setFilter("nearest", "nearest")
@@ -48,7 +54,7 @@ end
 function Player:update(dt)
 	self:updatePosition(dt)
 	self:boundaryCollisions()
-	self:shootBullet()
+	self:updateFiring(dt)
 end 
 
 function Player:draw()
@@ -97,13 +103,24 @@ function Player:boundaryCollisions()
 	end 
 end 
 
-function Player:shootBullet()
+function Player:updateFiring(dt)
+
+	if self.fireTimer:isComplete(dt) then 
+		self.canFire = true 
+	end 
+
 	if getKeyDown("j") then 
+		-- only fire if the fire rate timer has expired 
+		if self.canFire then 
+			self.canFire = false
+			self.fireTimer:reset()
+			-- spawn bullets at each of the 4 guns
+			self:SpawnBullets()
+		end 
 		-- move slower when firing
 		self.currentlyFiring = true
 		self.moveSpeed = self.firingMoveSpeed
-		-- spawn bullets at each of the 4 guns
-		self:SpawnBullets()
+
 	else 
 		self.currentlyFiring = false
 		self.moveSpeed = self.originalMoveSpeed
@@ -117,28 +134,28 @@ function Player:SpawnBullets()
 		centre.x + self.guns["lowerLeft"].xOffset, 
 		centre.y + self.guns["lowerLeft"].yOffset,
 		0,
-		-500,
+		-self.bulletSpeed,
 		BULLET_OWNER_TYPES.player)
 
 	bulletManager:newBullet(
 		centre.x + self.guns["lowerRight"].xOffset, 
 		centre.y + self.guns["lowerRight"].yOffset,
 		0,
-		-500,
+		-self.bulletSpeed,
 		BULLET_OWNER_TYPES.player)
 
 	bulletManager:newBullet(
 		centre.x + self.guns["upperLeft"].xOffset, 
 		centre.y + self.guns["upperLeft"].yOffset,
 		0,
-		-500,
+		-self.bulletSpeed,
 		BULLET_OWNER_TYPES.player)
 
 	bulletManager:newBullet(
 		centre.x + self.guns["upperRight"].xOffset, 
 		centre.y + self.guns["upperRight"].yOffset,
 		0,
-		-500,
+		-self.bulletSpeed,
 		BULLET_OWNER_TYPES.player)	
 
 end 
