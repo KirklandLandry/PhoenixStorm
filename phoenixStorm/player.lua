@@ -7,6 +7,9 @@ function Player:new ()
 	o.x = 0
 	o.y = 0
 	o.moveSpeed = 310
+	o.originalMoveSpeed = 310
+	o.firingMoveSpeed = o.originalMoveSpeed * 0.55
+	o.currentlyFiring = false
 	o.shipHitRadius = 5
 	o.shipSprite = love.graphics.newImage("assets/sprites/96x96playerShip.png")
 	o.shipSprite:setFilter("nearest", "nearest")
@@ -26,11 +29,10 @@ function Player:new ()
 	o.gunSpriteSheetQuads["upperRight"] = love.graphics.newQuad(48, 0, 16, 32, o.gunSpriteSheetWidth, o.gunSpriteSheetHeight)
 
 	o.guns = {}
-	o.guns["lowerLeft"] = newGun("lowerLeft", -o.shipWidth/2, 0)
-	o.guns["lowerRight"] = newGun("lowerRight", o.shipWidth/2, 0)
-	o.guns["upperLeft"] = newGun("upperLeft", -o.shipWidth/2 + 16, -48)
-	o.guns["upperRight"] = newGun("upperRight", o.shipWidth/2 - 16, -48)
-
+	o.guns["lowerLeft"] = newGun("lowerLeft", -o.shipWidth/2- 16 - 16, 0)
+	o.guns["lowerRight"] = newGun("lowerRight", o.shipWidth/2 + 16, 0)
+	o.guns["upperLeft"] = newGun("upperLeft", -o.shipWidth/2 + 4, -48)
+	o.guns["upperRight"] = newGun("upperRight", o.shipWidth/2 - 16 - 4, -48)
 
 	return o
 end
@@ -44,11 +46,9 @@ function newGun(name, _xOffset, _yOffset)
 end 
 
 function Player:update(dt)
-
 	self:updatePosition(dt)
 	self:boundaryCollisions()
-
-
+	self:shootBullet()
 end 
 
 function Player:draw()
@@ -61,10 +61,10 @@ function Player:draw()
 	love.graphics.circle("fill", centre.x, centre.y, self.shipHitRadius)
 	resetColor()
 	-- draw the guns 
-	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerLeft"]	, centre.x - 16 + self.guns["lowerLeft"].xOffset 	, centre.y + self.guns["lowerLeft"].yOffset)
-	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerRight"]	, centre.x 		+ self.guns["lowerRight"].xOffset 	, centre.y + self.guns["lowerRight"].yOffset)
-	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperLeft"]	, centre.x - 16 + self.guns["upperLeft"].xOffset 	, centre.y + self.guns["upperLeft"].yOffset)
-	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperRight"]	, centre.x 		+ self.guns["upperRight"].xOffset 	, centre.y + self.guns["upperRight"].yOffset)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerLeft"]	, centre.x + self.guns["lowerLeft"].xOffset 	, centre.y + self.guns["lowerLeft"].yOffset)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerRight"]	, centre.x + self.guns["lowerRight"].xOffset 	, centre.y + self.guns["lowerRight"].yOffset)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperLeft"]	, centre.x + self.guns["upperLeft"].xOffset 	, centre.y + self.guns["upperLeft"].yOffset)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperRight"]	, centre.x + self.guns["upperRight"].xOffset 	, centre.y + self.guns["upperRight"].yOffset)
 end 
 
 function Player:updatePosition(dt)
@@ -97,7 +97,53 @@ function Player:boundaryCollisions()
 	end 
 end 
 
+function Player:shootBullet()
+	if getKeyDown("j") then 
+		-- move slower when firing
+		self.currentlyFiring = true
+		self.moveSpeed = self.firingMoveSpeed
+		-- spawn bullets at each of the 4 guns
+		self:SpawnBullets()
+	else 
+		self.currentlyFiring = false
+		self.moveSpeed = self.originalMoveSpeed
+	end 
+end 
 
+function Player:SpawnBullets()
+	local centre = self:getCentre()
+
+	bulletManager:newBullet(
+		centre.x + self.guns["lowerLeft"].xOffset, 
+		centre.y + self.guns["lowerLeft"].yOffset,
+		0,
+		-500,
+		BULLET_OWNER_TYPES.player)
+
+	bulletManager:newBullet(
+		centre.x + self.guns["lowerRight"].xOffset, 
+		centre.y + self.guns["lowerRight"].yOffset,
+		0,
+		-500,
+		BULLET_OWNER_TYPES.player)
+
+	bulletManager:newBullet(
+		centre.x + self.guns["upperLeft"].xOffset, 
+		centre.y + self.guns["upperLeft"].yOffset,
+		0,
+		-500,
+		BULLET_OWNER_TYPES.player)
+
+	bulletManager:newBullet(
+		centre.x + self.guns["upperRight"].xOffset, 
+		centre.y + self.guns["upperRight"].yOffset,
+		0,
+		-500,
+		BULLET_OWNER_TYPES.player)	
+
+end 
+
+-- get the centre relative to the centre of the ship sprite based on current position
 function Player:getCentre()
 	return {x = self.x + (self.shipWidth/2), y = self.y + (self.shipHeight/2)}
 end 

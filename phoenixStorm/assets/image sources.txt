@@ -1,0 +1,16 @@
+64x32playerGunsSpritesheet,
+96x96playerShip,
+player guns stacked,
+SpaceArtPublish
+http://opengameart.org/content/space-game-art-pack-extended
+
+
+256x256explosion
+http://opengameart.org/content/explosion
+
+explosions-0,
+16x16BulletsSpriteSheets,
+http://opengameart.org/content/explosions-0
+
+firepunch_alpha
+http://opengameart.org/content/fire-punch

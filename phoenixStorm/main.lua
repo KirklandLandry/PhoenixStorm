@@ -6,7 +6,7 @@ require "queue"
 require "stack"
 require "sound"
 require "player"
-
+require "bulletManager"
 -- this is the actual physical window size 
 screenWidth = nil
 screenHeight = nil

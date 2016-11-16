@@ -4,6 +4,8 @@ local gameState = nil
 
 local player = nil 
 
+bulletManager = nil 
+
 -- BASE LOAD
 function loadGame()
 	gameState = Stack:new()
@@ -11,12 +13,18 @@ function loadGame()
 
 
 	player = Player:new()
+
+	bulletManager = BulletManager:new()
+
 end
+
+
 
 -- BASE UPDATE 
 function updateGame(dt)	
 	if getKeyDown("escape") then love.event.quit() end 
 
+	bulletManager:updateBullets(dt)
 
 	player:update(dt)
 
@@ -25,6 +33,7 @@ end
 -- BASE DRAW 
 function drawGame()
 	player:draw()
+	bulletManager:drawBullets()
 end
 
 -- window focus callback
@@ -33,3 +42,4 @@ function love.focus(f)
 	else
 	end
 end
+
