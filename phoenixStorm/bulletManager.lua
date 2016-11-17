@@ -81,6 +81,7 @@ function BulletManager:updateBullets(dt)
 				local temp = enemyManager:getElementAt(j)
 				if rectCircleCollision(temp.x,temp.y,temp.shipWidth,temp.shipHeight, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
 					enemyManager:decreaseHealth(j)
+					effectManager:addEffect(EFFECT_TYPE.hit, temp.x, temp.y)
 					table.remove(self.bullets, i)
 				end 
 			end

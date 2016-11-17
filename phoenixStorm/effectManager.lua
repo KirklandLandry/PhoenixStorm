@@ -7,7 +7,6 @@ function EffectManager:new ()
 	self.__index = self
 	
 
-
 	o.explosionSpriteSheet = love.graphics.newImage("assets/sprites/256x256explosion.png")
 	o.explosionSpriteSheet:setFilter("nearest", "nearest")
 	o.explosionSpriteSheetWidth = o.explosionSpriteSheet:getWidth()
@@ -20,9 +19,23 @@ function EffectManager:new ()
 			o.explosionSpriteSheetQuads[counter] = love.graphics.newQuad((x-1)*64, (y-1)*64, 64, 64, o.explosionSpriteSheetWidth, o.explosionSpriteSheetHeight)
 		end
 	end
-
 	o.explosionTotalFrameCount = counter
 	o.effectList = {}	
+
+
+
+	o.hitSpriteSheet = love.graphics.newImage("assets/sprites/160x32hitSpriteSheet.png")
+	o.hitSpriteSheet:setFilter("nearest", "nearest")
+	o.hitSpriteSheetWidth = o.hitSpriteSheet:getWidth()
+	o.hitSpriteSheetHeight = o.hitSpriteSheet:getHeight()
+	o.hitSpriteSheetQuads = {}
+	o.hitTotalFrameCount = 5
+	for i=1,o.hitTotalFrameCount do
+		o.hitSpriteSheetQuads[i] = love.graphics.newQuad((i-1)*32, 0, 64, 64, o.hitSpriteSheetWidth, o.hitSpriteSheetHeight)
+	end
+	
+	o.effectList = {}	
+
 
 	return o
 end
@@ -45,8 +58,8 @@ function EffectManager:update(dt)
 		if self.effectList[i].frameTimer:isComplete(dt) then
 			self.effectList[i].frameIndex = self.effectList[i].frameIndex + 1
 
-			if (self.effectList[i].effectType == EFFECT_TYPE.explosion and self.effectList[i].frameIndex > self.explosionTotalFrameCount)
-			 then 
+			if (self.effectList[i].effectType == EFFECT_TYPE.explosion and self.effectList[i].frameIndex > self.explosionTotalFrameCount) or 
+				(self.effectList[i].effectType == EFFECT_TYPE.hit and self.effectList[i].frameIndex > self.hitTotalFrameCount) then 
 				table.remove(self.effectList, i)
 			end 
 		end 
@@ -59,7 +72,7 @@ function EffectManager:draw()
 		if self.effectList[i].effectType == EFFECT_TYPE.explosion then 
 			love.graphics.draw(self.explosionSpriteSheet, self.explosionSpriteSheetQuads[self.effectList[i].frameIndex], self.effectList[i].x, self.effectList[i].y)
 		elseif self.effectList[i].effectType == EFFECT_TYPE.hit then 
-			--love.graphics.draw(self.explosionSpriteSheet, self.explosionSpriteSheetQuads[self.effectList[i].frameIndex], self.effectList[i].x, self.effectList[i].y)
+			love.graphics.draw(self.hitSpriteSheet, self.hitSpriteSheetQuads[self.effectList[i].frameIndex], self.effectList[i].x, self.effectList[i].y)
 		end 
 	end
 end 

@@ -10,6 +10,7 @@ http://opengameart.org/content/explosion
 
 explosions-0,
 16x16BulletsSpriteSheets,
+160x32hitSpriteSheet,
 http://opengameart.org/content/explosions-0
 
 firepunch_alpha

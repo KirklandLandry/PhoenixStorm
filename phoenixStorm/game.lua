@@ -2,7 +2,8 @@
 -- will want to revamp bullet pattern system to allow higher control over bullets / more advanced behaviour
 
 
--- TODO: clip out one of the small circle effects in explosions-0 and use it as a hit effect
+-- TODO: add a global sprite folder path to main?
+
 
 local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver"}
 local gameState = nil
