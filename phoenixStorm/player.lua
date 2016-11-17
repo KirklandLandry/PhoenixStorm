@@ -4,8 +4,15 @@ function Player:new ()
 	setmetatable(o, self)
 	self.__index = self
 	
-	o.x = 0
-	o.y = 0
+
+	o.shipHitRadius = 5
+	o.shipSprite = love.graphics.newImage("assets/sprites/96x96playerShip.png")
+	o.shipSprite:setFilter("nearest", "nearest")
+	o.shipWidth = o.shipSprite:getWidth()
+	o.shipHeight = o.shipSprite:getHeight()
+
+	o.x = screenWidth/2 - o.shipWidth/2
+	o.y = screenHeight - o.shipHeight
 	o.moveSpeed = 310
 	o.originalMoveSpeed = 310
 	o.firingMoveSpeed = o.originalMoveSpeed * 0.55
@@ -15,12 +22,6 @@ function Player:new ()
 	o.fireRate = 0.08
 	o.fireTimer = Timer:new(o.fireRate, TimerModes.single)
 	o.canFire = true 
-
-	o.shipHitRadius = 5
-	o.shipSprite = love.graphics.newImage("assets/sprites/96x96playerShip.png")
-	o.shipSprite:setFilter("nearest", "nearest")
-	o.shipWidth = o.shipSprite:getWidth()
-	o.shipHeight = o.shipSprite:getHeight()
 
 	o.gunSpriteSheet = love.graphics.newImage("assets/sprites/64x32playerGunsSpritesheet.png")
 	o.gunSpriteSheet:setFilter("nearest", "nearest")

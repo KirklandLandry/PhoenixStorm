@@ -9,6 +9,7 @@ require "player"
 require "bulletManager"
 require "enemy"
 require "enemyManager"
+require "collisions"
 
 -- this is the actual physical window size 
 screenWidth = nil

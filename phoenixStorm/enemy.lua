@@ -61,6 +61,9 @@ function Enemy:new()
 	o.shipHeight = o.shipSprite:getHeight()
 
 	o.fireOption = ENEMY_SHOOT_OPTIONS.shootWhileMoving
+	o.bulletSpeed = 350
+	o.fireRate = 0.5
+	o.fireTimer = Timer:new(o.fireRate, TimerModes.repeating)
 
 	o.renderPath = true
 
@@ -69,6 +72,7 @@ function Enemy:new()
 		ENEMY_MOVEMENT_EVENTS.move, 
 		newMoveEventArgs(topLeftBottomRightSCurve(o.shipWidth, o.shipHeight))
 		))]]
+
 
 	o.eventQueue:enqueue(newEnemyEvent(
 		ENEMY_MOVEMENT_EVENTS.move, 
@@ -92,15 +96,13 @@ function Enemy:new()
 			{
 			screenWidth/2, screenHeight/2,
 			screenWidth, screenHeight/2, 
-			screenWidth, screenHeight
+			screenWidth , -o.shipHeight
 			})
 		))
 
-	--[[
-	o.bulletSpeed = 650
-	o.fireRate = 0.08
-	o.fireTimer = Timer:new(o.fireRate, TimerModes.single)
-	]]
+	
+
+	
 
 
 	return o
@@ -109,9 +111,19 @@ end
 
 function Enemy:update(dt)
 	if self.eventQueue:length() > 0 then 
+		-- if the currenet event is movement 
 		if self.eventQueue:peek().eventType == ENEMY_MOVEMENT_EVENTS.move then 
+			-- if enemy is set to shoot while moving then  
+			if self.fireOption == ENEMY_SHOOT_OPTIONS.shootWhileMoving then 
+				-- if it's time to fire a new bullet
+				if self.fireTimer:isComplete(dt) then 
+					-- have an enum for shot type
+					self:scattershotTowardsPlayer()
+				end 
+			end 
+			-- update percent completion of bezier curve
 			self.eventQueue:peek().percentComplete = self.eventQueue:peek().percentComplete + (self.moveSpeed * dt)
-
+			-- if done -> next event, else udpate position
 			if self.eventQueue:peek().percentComplete > 1 then 
 				self.eventQueue:dequeue()
 			else 
@@ -119,9 +131,20 @@ function Enemy:update(dt)
 				self.x = x
 				self.y = y
 			end 
+		-- if the current event is waiting 
 		elseif self.eventQueue:peek().eventType == ENEMY_MOVEMENT_EVENTS.wait then 
+			-- just sit around until the wait event is over
 			if self.eventQueue:peek().timer:isComplete(dt) then 
 				self.eventQueue:dequeue()
+			else 
+				-- if the enemy is set to shoot while waiting 
+				if self.fireOption == ENEMY_SHOOT_OPTIONS.shootWhileWaiting then 
+					-- if it's time to fire a new bullet
+					if self.fireTimer:isComplete(dt) then 
+						-- have an enum for shot type
+						self:scattershotTowardsPlayer()
+					end 
+				end 
 			end 
 		end 
 	end 
@@ -133,13 +156,10 @@ function Enemy:draw()
 	if self.eventQueue:length() > 0 and self.eventQueue:peek().eventType == ENEMY_MOVEMENT_EVENTS.move and self.renderPath then 
 		love.graphics.line(self.eventQueue:peek().curve:render())
 	end 
-
 end 	
 
 
--- write out a list of common bezier curve functions  
-
-
+-- write out a list of common bezier curve patterns  
 function topLeftBottomRightSCurve(spriteWidth, spriteHeight)
 	return {
 	-spriteWidth,-spriteHeight,
@@ -150,3 +170,16 @@ end
 
 
 -- write out a list of bullet patterns 
+function Enemy:scattershotTowardsPlayer()
+	for i=1,10 do
+		local playerPos = getCurrentPlayerPosition()
+		playerPos.x = playerPos.x + math.random(-32, 32)
+		playerPos.y = playerPos.y + math.random(-32, 32)
+		vx = playerPos.x - self.x
+		vy = playerPos.y - self.y
+		local mag = math.sqrt(math.pow(vx,2) + math.pow(vy,2))
+		vx = vx/mag * self.bulletSpeed
+		vy = vy/mag * self.bulletSpeed
+		bulletManager:newBullet(self.x + math.random(-24,24), self.y+ math.random(-24,24), vx, vy, BULLET_OWNER_TYPES.enemy)
+	end
+end 
