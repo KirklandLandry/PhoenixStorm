@@ -40,8 +40,8 @@ function ScoreManager:update(dt)
         local mag = math.sqrt(math.pow(nvx,2) + math.pow(nvy,2))
         nvx = nvx / mag 
         nvy = nvy / mag 
-        self.scoreTokenList[i].vx = nvx * 70 * dt
-        self.scoreTokenList[i].vy = nvy * 70 * dt
+        self.scoreTokenList[i].vx = nvx * 80 * dt
+        self.scoreTokenList[i].vy = nvy * 80 * dt
         self.scoreTokenList[i].x = self.scoreTokenList[i].x + self.scoreTokenList[i].vx 
         self.scoreTokenList[i].y = self.scoreTokenList[i].y + self.scoreTokenList[i].vy
         

@@ -1,6 +1,7 @@
 
 Level1 = {}
 
+BACKGROUND_ELEMENT_TYPE = {asteroid = "asteroid"}
 
 
 function Level1:new ()
@@ -9,6 +10,9 @@ function Level1:new ()
     self.__index = self
 
     o.backgroundElementList = {}
+
+
+    --o.asteroidList = {}
 
     return o
 end
@@ -19,7 +23,7 @@ end
 
 function Level1:draw()
     for i=1,#self.backgroundElementList do
-        print(i)
+        
     end
 end 
 
@@ -27,6 +31,8 @@ function Level1:addSpawnPoint(enemy, count, spawnDelayTime)
 
 end 
 
-function Level1:addBackgroundElement(type)
+function Level1:addBackgroundElement(type, speed)
+    --[[table.insert(self.backgroundElementList, {
 
+    })]]
 end 

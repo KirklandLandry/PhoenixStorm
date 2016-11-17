@@ -171,6 +171,7 @@ function love.focus(f)
 	end
 end
 
+-- the should really return the player centre position as well
 function getCurrentPlayerPosition()
 	return {x = player.x, y = player.y, width = player.shipWidth, height = player.shipHeight}
 end 
