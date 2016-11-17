@@ -12,6 +12,7 @@ require "enemyManager"
 require "collisions"
 require "bezierCurves"
 require "effectManager"
+require "scoreManager"
 
 -- this is the actual physical window size 
 screenWidth = nil
@@ -60,6 +61,11 @@ end
 
 -------------- additional math functions --------------
 -- https://love2d.org/wiki/General_math
+
+function math.approxEqual(a,b,threshold)
+	if (math.abs(a - b) < threshold) then return true else return false end 
+end 
+
 
 -- Averages an arbitrary number of angles (in radians).
 function math.averageAngles(...)

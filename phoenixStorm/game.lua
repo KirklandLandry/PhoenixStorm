@@ -14,6 +14,7 @@ local player = nil
 bulletManager = nil 
 enemyManager = nil
 effectManager = nil
+scoreManager = nil
 
 -- BASE LOAD
 function loadGame()
@@ -24,6 +25,8 @@ function loadGame()
 	bulletManager = BulletManager:new()
 
 	effectManager = EffectManager:new()
+
+	scoreManager = ScoreManager:new()
 
 	enemyManager = EnemyManager:new()
 	enemyManager:addEnemy(
@@ -80,6 +83,7 @@ function updateGame(dt)
 	player:update(dt)
 	enemyManager:update(dt)
 	effectManager:update(dt)
+	scoreManager:update(dt)
 end
 
 -- BASE DRAW 
@@ -88,6 +92,7 @@ function drawGame()
 	bulletManager:drawBullets()
 	enemyManager:draw()
 	effectManager:draw()
+	scoreManager:draw()
 end
 
 -- window focus callback

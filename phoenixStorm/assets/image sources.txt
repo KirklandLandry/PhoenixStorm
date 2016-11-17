@@ -15,3 +15,6 @@ http://opengameart.org/content/explosions-0
 
 firepunch_alpha
 http://opengameart.org/content/fire-punch
+
+192x32coinSpriteSheet
+http://opengameart.org/content/3d-spinning-gold-coin-sprite

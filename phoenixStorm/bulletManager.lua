@@ -64,18 +64,18 @@ function BulletManager:updateBullets(dt)
 		if self.bullets[i].x > screenWidth or self.bullets[i].x + self.bulletdiameter < 0 or 
 		   self.bullets[i].y > screenHeight or self.bullets[i].y + self.bulletdiameter < 0	then 
 		   table.remove(self.bullets, i)
-		end  
+		  
 
 		-- check if an enemy bullet hit the player
-		if self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
+		elseif self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
 			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
 				playerHit()
 				table.remove(self.bullets, i)
 			end 
-		end 
+		 
 
 		-- check if a player bullet hit an enemy
-		if self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.player then 
+		elseif self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.player then 
 			local enemyCount = enemyManager:getEnemyCount()
 			for j=enemyCount,1,-1 do
 				local temp = enemyManager:getElementAt(j)

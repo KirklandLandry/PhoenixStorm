@@ -33,8 +33,14 @@ function Timer:reset(newMax)
 	self.timerValue = newMax or 0
 end
 
+-- force timer to completion
 function Timer:maxOut()
 	self.timerValue = self.timerMax
+end 
+
+-- a value between 0 to 1
+function Timer:percentComplete()
+	return (self.timerValue / self.timerMax)
 end 
 
 -- draw a timer on screen 
