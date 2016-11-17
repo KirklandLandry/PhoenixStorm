@@ -5,7 +5,7 @@ function Player:new ()
 	self.__index = self
 	
 
-	o.shipHitRadius = 3
+	o.shipHitRadius = 2
 	o.lives = 3 
 	o.playerSpawning = false
 	o.respawnTimer = Timer:new(1, TimerModes.single)

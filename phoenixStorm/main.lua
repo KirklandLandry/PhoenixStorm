@@ -13,6 +13,7 @@ require "collisions"
 require "bezierCurves"
 require "effectManager"
 require "scoreManager"
+require "scrollingBackground"
 
 -- this is the actual physical window size 
 screenWidth = nil
