@@ -63,30 +63,27 @@ function BulletManager:updateBullets(dt)
 		-- check if it went off screen, despawn if it did
 		if self.bullets[i].x > screenWidth or self.bullets[i].x + self.bulletdiameter < 0 or 
 		   self.bullets[i].y > screenHeight or self.bullets[i].y + self.bulletdiameter < 0	then 
-		   table.remove(self.bullets, i)
-		  
-
+		   table.remove(self.bullets, i)		  
 		-- check if an enemy bullet hit the player
 		elseif self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
 			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
 				playerHit()
 				table.remove(self.bullets, i)
 			end 
-		 
-
 		-- check if a player bullet hit an enemy
 		elseif self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.player then 
 			local enemyCount = enemyManager:getEnemyCount()
-			for j=enemyCount,1,-1 do
-				local temp = enemyManager:getElementAt(j)
-				if rectCircleCollision(temp.x,temp.y,temp.shipWidth,temp.shipHeight, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
-					enemyManager:decreaseHealth(j)
+			for enemyIndex=enemyCount,1,-1 do
+				local temp = enemyManager:getElementAt(enemyIndex)
+				if temp ~= nil and rectCircleCollision(temp.x,temp.y,temp.shipWidth,temp.shipHeight, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
+					enemyManager:decreaseHealth(enemyIndex)
 					effectManager:addEffect(EFFECT_TYPE.hit, temp.x, temp.y)
 					table.remove(self.bullets, i)
+					-- break out of the enemyCount loop since the bullet will no longer exist (so you obviously can't check agaisnt it)
+					break
 				end 
 			end
 		end 
-
 	end
 end 
 

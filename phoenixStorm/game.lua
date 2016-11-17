@@ -111,7 +111,7 @@ end
 
 function updateTitle(dt)
 	if getKeyDown("j") then 
-		resetInput()
+		--resetInput()
 		gameState:push(GAME_STATES.stage)
 	end 
 end	 
@@ -123,7 +123,6 @@ end
 
 -- BASE DRAW 
 function drawGame()
-
 	if gameState:peek() == GAME_STATES.stage then 
 		drawStage()
 	elseif gameState:peek() == GAME_STATES.boss then 
@@ -135,9 +134,6 @@ function drawGame()
 	elseif gameState:peek() == GAME_STATES.gameOver then 
 		drawGameOver()
 	end 
-
-
-	--drawText("0123456789",0,0)
 end
 
 function drawStage(dt)

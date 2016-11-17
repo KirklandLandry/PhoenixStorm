@@ -49,7 +49,9 @@ function loadFonts()
 
 end 
 
-function drawText(word, x, y)
+function drawText(word, _x, _y)
+    local x = _x or 0
+    local y = _y or 0
     local counter = 0
     for c in word:gmatch"." do
         love.graphics.draw(textTileset, textTilesetQuads[c], x + (counter*16), y)
