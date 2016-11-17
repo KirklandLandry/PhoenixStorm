@@ -14,6 +14,7 @@ require "bezierCurves"
 require "effectManager"
 require "scoreManager"
 require "scrollingBackground"
+require "fonts"
 
 -- this is the actual physical window size 
 screenWidth = nil
@@ -30,6 +31,10 @@ function love.load(arg)
 	screenWidth = love.graphics.getWidth()
 	screenHeight = love.graphics.getHeight()
 	
+	-- in fonts.lua, load a font so you can use drawText.
+	-- could add options for multiple font sizes(currently 16x16)
+	loadFonts()
+
 	loadGame()
 	loadFramerateLock()
 
