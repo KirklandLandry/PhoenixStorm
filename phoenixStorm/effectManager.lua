@@ -1,4 +1,4 @@
-EFFECT_TYPE = {explosion = "explosion", hit = "hit"}
+EFFECT_TYPE = {explosion = "explosion", explosion128 = "explosion128", hit = "hit"}
 
 EffectManager = {}
 function EffectManager:new ()
@@ -20,7 +20,20 @@ function EffectManager:new ()
 		end
 	end
 	o.explosionTotalFrameCount = counter
-	o.effectList = {}	
+
+	o.explosion128SpriteSheet = love.graphics.newImage("assets/sprites/512x512explosion.png")
+	o.explosion128SpriteSheet:setFilter("nearest", "nearest")
+	o.explosion128SpriteSheetWidth = o.explosion128SpriteSheet:getWidth()
+	o.explosion128SpriteSheetHeight = o.explosion128SpriteSheet:getHeight()
+	o.explosion128SpriteSheetQuads = {}
+	counter = 0
+	for y=1,4 do
+		for x=1,4 do
+			counter = counter + 1
+			o.explosion128SpriteSheetQuads[counter] = love.graphics.newQuad((x-1)*128, (y-1)*128, 128, 128, o.explosion128SpriteSheetWidth, o.explosion128SpriteSheetHeight)
+		end
+	end
+	o.explosion128TotalFrameCount = counter
 
 
 
@@ -42,7 +55,7 @@ end
 
 
 function EffectManager:addEffect(_effectType, _x, _y)
-	assert(_effectType == EFFECT_TYPE.explosion or _effectType == EFFECT_TYPE.hit)
+	assert(_effectType == EFFECT_TYPE.explosion or _effectType == EFFECT_TYPE.hit or _effectType == EFFECT_TYPE.explosion128)
 	table.insert(self.effectList, {
 		effectType = _effectType,
 		x = _x,
@@ -59,7 +72,8 @@ function EffectManager:update(dt)
 			self.effectList[i].frameIndex = self.effectList[i].frameIndex + 1
 
 			if (self.effectList[i].effectType == EFFECT_TYPE.explosion and self.effectList[i].frameIndex > self.explosionTotalFrameCount) or 
-				(self.effectList[i].effectType == EFFECT_TYPE.hit and self.effectList[i].frameIndex > self.hitTotalFrameCount) then 
+				(self.effectList[i].effectType == EFFECT_TYPE.hit and self.effectList[i].frameIndex > self.hitTotalFrameCount) or 
+				(self.effectList[i].effectType == EFFECT_TYPE.explosion128 and self.effectList[i].frameIndex > self.explosion128TotalFrameCount) then 
 				table.remove(self.effectList, i)
 			end 
 		end 
@@ -73,6 +87,8 @@ function EffectManager:draw()
 			love.graphics.draw(self.explosionSpriteSheet, self.explosionSpriteSheetQuads[self.effectList[i].frameIndex], self.effectList[i].x, self.effectList[i].y)
 		elseif self.effectList[i].effectType == EFFECT_TYPE.hit then 
 			love.graphics.draw(self.hitSpriteSheet, self.hitSpriteSheetQuads[self.effectList[i].frameIndex], self.effectList[i].x, self.effectList[i].y)
+		elseif self.effectList[i].effectType == EFFECT_TYPE.explosion128 then 
+			love.graphics.draw(self.explosion128SpriteSheet, self.explosion128SpriteSheetQuads[self.effectList[i].frameIndex], self.effectList[i].x, self.effectList[i].y)
 		end 
 	end
 end 

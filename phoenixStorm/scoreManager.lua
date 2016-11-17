@@ -47,10 +47,9 @@ function ScoreManager:update(dt)
         
         -- check if player collected a score token
         local tempToken = self.scoreTokenList[i]
-        if rectRect(playerPos.x, playerPos.y, playerPos.width, playerPos.height, tempToken.x, tempToken.y, tempToken.width, tempToken.height) then 
+        if rectRectCollision(playerPos.x, playerPos.y, playerPos.width, playerPos.height, tempToken.x, tempToken.y, tempToken.width, tempToken.height) then 
             self.currentScore = self.currentScore + self.scoreTokenList[i].value
             table.remove(self.scoreTokenList,i)
-            print(self.currentScore)
         -- else update lifetime and remove if it's done
         elseif self.scoreTokenList[i].lifetimeTimer:isComplete(dt) then
             table.remove(self.scoreTokenList, i)

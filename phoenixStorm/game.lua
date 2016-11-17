@@ -3,7 +3,9 @@
 
 
 -- TODO: add a global sprite folder path to main?
-
+-- TODO: add a bomb to clear all bullets
+-- just draw a circle and despawn anything that goes inside the circle
+-- grow the circle from the player position
 
 local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver"}
 local gameState = nil
@@ -107,5 +109,5 @@ function bulletCurrentPlayerCollision(ex, ey, er)
 end 
 
 function playerHit()
-
+	player:hitByEnemyBullet()
 end 

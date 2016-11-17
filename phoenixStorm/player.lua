@@ -6,6 +6,12 @@ function Player:new ()
 	
 
 	o.shipHitRadius = 3
+	o.lives = 3 
+	o.playerSpawning = false
+	o.respawnTimer = Timer:new(1, TimerModes.single)
+	o.invincibilityTimer = Timer:new(1, TimerModes.single)
+	o.invincibilityTimer:maxOut()
+	o.bombs = 3
 	o.shipSprite = love.graphics.newImage("assets/sprites/96x96playerShip.png")
 	o.shipSprite:setFilter("nearest", "nearest")
 	o.shipWidth = o.shipSprite:getWidth()
@@ -53,25 +59,63 @@ function newGun(name, _xOffset, _yOffset)
 end 
 
 function Player:update(dt)
-	self:updatePosition(dt)
-	self:boundaryCollisions()
-	self:updateFiring(dt)
+
+	self.invincibilityTimer:isComplete(dt)
+
+	if self.playerSpawning then 
+		self:updateRespawn(dt)
+	else 
+		self:updatePosition(dt)
+		self:boundaryCollisions()
+		self:updateFiring(dt)
+	end 
 end 
 
+function Player:respawn()
+	self.playerSpawning = true 
+	self.x = screenWidth/2 - self.shipWidth/2
+	self.y = screenHeight + self.shipHeight
+	self.respawnTimer:reset()
+end 
+
+function Player:updateRespawn(dt)
+	-- if it's time to respawn
+	if self.respawnTimer:isComplete(dt) then 
+		-- lerp towards starting position 
+		if not math.approxEqual(self.y,screenHeight-self.shipHeight,8) then 
+			self.y = self.y + ((((screenHeight-self.shipHeight) - self.y) * 0.07) * 80 * dt)
+		else 
+			self.playerSpawning = false
+			self.invincibilityTimer:reset()
+		end 
+	end 
+end 
+
+function Player:hitByEnemyBullet()
+	if not self.playerSpawning and self.invincibilityTimer:percentComplete() >= 1 then 
+		effectManager:addEffect(EFFECT_TYPE.explosion128, self.x, self.y)
+		self.lives = self.lives - 1
+		self:respawn()
+	end 
+end
+
 function Player:draw()
+	if self.invincibilityTimer:percentComplete() < 1 or self.playerSpawning then 
+		love.graphics.setColor(150,150,150,255)
+	end 
 	-- the centre of the ship for reference
 	local centre = self:getCentre()
 	-- draw the player sprite
 	love.graphics.draw(self.shipSprite, self.x, self.y)
-	-- draw the player hit circle
-	love.graphics.setColor(255,0,0)
-	love.graphics.circle("fill", centre.x, centre.y, self.shipHitRadius+1)
-	resetColor()
 	-- draw the guns 
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerLeft"]	, centre.x + self.guns["lowerLeft"].xOffset 	, centre.y + self.guns["lowerLeft"].yOffset)
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerRight"]	, centre.x + self.guns["lowerRight"].xOffset 	, centre.y + self.guns["lowerRight"].yOffset)
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperLeft"]	, centre.x + self.guns["upperLeft"].xOffset 	, centre.y + self.guns["upperLeft"].yOffset)
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperRight"]	, centre.x + self.guns["upperRight"].xOffset 	, centre.y + self.guns["upperRight"].yOffset)
+	-- draw the player hit circle
+	love.graphics.setColor(255,0,0)
+	love.graphics.circle("fill", centre.x, centre.y, self.shipHitRadius+1)
+	resetColor()
 end 
 
 function Player:updatePosition(dt)
@@ -105,7 +149,6 @@ function Player:boundaryCollisions()
 end 
 
 function Player:updateFiring(dt)
-
 	if self.fireTimer:isComplete(dt) then 
 		self.canFire = true 
 	end 
