@@ -1,5 +1,6 @@
 BulletManager = {}
 BULLET_OWNER_TYPES = {player = "player", enemy = "enemy"}
+-- should have something for bullet types 
 
 function BulletManager:new ()
 	local o = {}

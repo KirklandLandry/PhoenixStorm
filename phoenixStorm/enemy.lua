@@ -60,11 +60,11 @@ function Enemy:new()
 	o.shipWidth = o.shipSprite:getWidth()
 	o.shipHeight = o.shipSprite:getHeight()
 
-	o.fireOption = ENEMY_SHOOT_OPTIONS.shootWhileMoving
-	o.bulletSpeed = 350
+	o.fireOption = ENEMY_SHOOT_OPTIONS.shootWhileWaiting
+	o.bulletSpeed = 250
 	o.fireRate = 0.5
 	o.fireTimer = Timer:new(o.fireRate, TimerModes.repeating)
-
+	o.fireTimer:maxOut()
 	o.renderPath = true
 
 	o.eventQueue = Queue:new()
@@ -79,8 +79,8 @@ function Enemy:new()
 		newMoveEventArgs(
 			{
 			-o.shipWidth,-o.shipHeight,
-			0,screenHeight/2, 
-			screenWidth/2, screenHeight/2
+			0,screenHeight/3, 
+			screenWidth/3, screenHeight/3
 			})
 		))
 
@@ -94,17 +94,13 @@ function Enemy:new()
 		ENEMY_MOVEMENT_EVENTS.move, 
 		newMoveEventArgs(
 			{
-			screenWidth/2, screenHeight/2,
-			screenWidth, screenHeight/2, 
+			screenWidth/3, screenHeight/3,
+			screenWidth, screenHeight/3, 
 			screenWidth , -o.shipHeight
 			})
 		))
 
 	
-
-	
-
-
 	return o
 end 
 
@@ -142,7 +138,7 @@ function Enemy:update(dt)
 					-- if it's time to fire a new bullet
 					if self.fireTimer:isComplete(dt) then 
 						-- have an enum for shot type
-						self:scattershotTowardsPlayer()
+						self:circleBurstOutwards(7.5)
 					end 
 				end 
 			end 
@@ -181,5 +177,14 @@ function Enemy:scattershotTowardsPlayer()
 		vx = vx/mag * self.bulletSpeed
 		vy = vy/mag * self.bulletSpeed
 		bulletManager:newBullet(self.x + math.random(-24,24), self.y+ math.random(-24,24), vx, vy, BULLET_OWNER_TYPES.enemy)
+	end
+end 
+
+function Enemy:circleBurstOutwards(degree)
+	local count = 360/degree
+	for i=1,count do
+		local vx = math.cos((i-1)*degree * math.pi/180) * self.bulletSpeed
+		local vy = math.sin((i-1)*degree * math.pi/180) * self.bulletSpeed
+		bulletManager:newBullet(self.x, self.y, vx, vy, BULLET_OWNER_TYPES.enemy)
 	end
 end 

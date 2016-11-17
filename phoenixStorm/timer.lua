@@ -33,6 +33,10 @@ function Timer:reset(newMax)
 	self.timerValue = newMax or 0
 end
 
+function Timer:maxOut()
+	self.timerValue = self.timerMax
+end 
+
 -- draw a timer on screen 
 function Timer:draw(x, y, width, height)
 	local timerPercentComplete = self.timerValue / self.timerMax
