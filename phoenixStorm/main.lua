@@ -53,7 +53,7 @@ end
 function love.draw()
 	resetColor()
 	drawGame()
-	drawFramerateLock(true)
+	drawFramerateLock(false)
 end
 
 function resetColor()

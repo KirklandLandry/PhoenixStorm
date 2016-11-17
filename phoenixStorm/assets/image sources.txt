@@ -18,3 +18,6 @@ http://opengameart.org/content/fire-punch
 
 192x32coinSpriteSheet
 http://opengameart.org/content/3d-spinning-gold-coin-sprite
+
+16x16sonicFont
+http://opengameart.org/content/sonic-font
