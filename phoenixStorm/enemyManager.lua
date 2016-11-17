@@ -32,10 +32,12 @@ function EnemyManager:update(dt)
 		-- update enemy
 		self.enemyList[i]:update(dt)
 		-- if an enemy is exhausted all it's actions, despawn it
-		if self.enemyList[i].eventQueue:length() <= 0 or self.enemyList[i].health <= 0 then 
+		if self.enemyList[i].eventQueue:length() <= 0 or self.enemyList[i].health <= 0  then 
+			if self.enemyList[i].health <= 0  then 
+				effectManager:addEffect(EFFECT_TYPE.explosion, self.enemyList[i].x, self.enemyList[i].y)
+			end 
 			table.remove(self.enemyList, i)
 		end 	
-
 	end
 end 
 

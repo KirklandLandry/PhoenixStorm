@@ -48,7 +48,7 @@ end
 
 function BulletManager:updateBullets(dt)
 	local bulletCount = #self.bullets
-	print(bulletCount)
+	--print(bulletCount)
 	for i=bulletCount,1,-1 do	
 		-- update position
 		self.bullets[i].x = self.bullets[i].x + (self.bullets[i].vx * dt) 
@@ -69,7 +69,6 @@ function BulletManager:updateBullets(dt)
 		-- check if an enemy bullet hit the player
 		if self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
 			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
-				print("enemy hit player")
 				playerHit()
 				table.remove(self.bullets, i)
 			end 
@@ -81,7 +80,6 @@ function BulletManager:updateBullets(dt)
 			for j=enemyCount,1,-1 do
 				local temp = enemyManager:getElementAt(j)
 				if rectCircleCollision(temp.x,temp.y,temp.shipWidth,temp.shipHeight, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
-					print("player hit enemy")
 					enemyManager:decreaseHealth(j)
 					table.remove(self.bullets, i)
 				end 

@@ -11,6 +11,7 @@ require "enemy"
 require "enemyManager"
 require "collisions"
 require "bezierCurves"
+require "effectManager"
 
 -- this is the actual physical window size 
 screenWidth = nil

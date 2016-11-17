@@ -1,15 +1,18 @@
 -- todo: make player guns (back OR front) rotate in circle? extra, do once complete
+-- will want to revamp bullet pattern system to allow higher control over bullets / more advanced behaviour
+
+
+-- TODO: clip out one of the small circle effects in explosions-0 and use it as a hit effect
 
 local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver"}
 local gameState = nil
 
 
-
 local player = nil 
 
 bulletManager = nil 
-
 enemyManager = nil
+effectManager = nil
 
 -- BASE LOAD
 function loadGame()
@@ -19,6 +22,8 @@ function loadGame()
 	player = Player:new()
 	bulletManager = BulletManager:new()
 
+	effectManager = EffectManager:new()
+
 	enemyManager = EnemyManager:new()
 	enemyManager:addEnemy(
 		1/2,
@@ -26,7 +31,7 @@ function loadGame()
 		ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
 		SHOT_PATTERNS.circleBurstOutwards,
 		ENEMY_SHIP_SPRITES.orbEnemy,
-		10,
+		5,
 		{
 			newEnemyEvent(
 				ENEMY_MOVEMENT_EVENTS.move, 
@@ -54,7 +59,7 @@ function updateGame(dt)
 		ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
 		SHOT_PATTERNS.circleBurstOutwards,
 		ENEMY_SHIP_SPRITES.orbEnemy,
-		10,
+		5,
 		{
 			newEnemyEvent(
 				ENEMY_MOVEMENT_EVENTS.move, 
@@ -73,6 +78,7 @@ function updateGame(dt)
 	bulletManager:updateBullets(dt)
 	player:update(dt)
 	enemyManager:update(dt)
+	effectManager:update(dt)
 end
 
 -- BASE DRAW 
@@ -80,6 +86,7 @@ function drawGame()
 	player:draw()
 	bulletManager:drawBullets()
 	enemyManager:draw()
+	effectManager:draw()
 end
 
 -- window focus callback
