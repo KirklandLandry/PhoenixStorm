@@ -70,3 +70,9 @@ function getCurrentPlayerPosition()
 	return {x = player.x, y = player.y}
 end 
 
+
+
+function bulletCurrentPlayerCollision(ex, ey, er)
+	local pc = player:getCentre()
+	return circleCircleCollision(pc.x,pc.y,player.shipHitRadius, ex,ey,er)
+end 

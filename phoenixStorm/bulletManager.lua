@@ -48,6 +48,15 @@ end
 
 function BulletManager:updateBullets(dt)
 	for i=#self.bullets,1,-1 do
+
+		-- check if an enemy bullet hit the player
+		if self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
+			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
+				print("enemy hit player")
+			end 
+		end 
+
+
 		-- update position
 		self.bullets[i].x = self.bullets[i].x + (self.bullets[i].vx * dt) 
 		self.bullets[i].y = self.bullets[i].y + (self.bullets[i].vy * dt) 
@@ -76,5 +85,7 @@ function BulletManager:drawBullets()
 		if self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
 			love.graphics.draw(self.purpleBulletSpriteSheet, self.purpleBulletSpriteSheetQuads[self.bullets[i].animationIndex], math.round(self.bullets[i].x), math.round(self.bullets[i].y))
 		end 
+		love.graphics.circle("line", self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius)
 	end
+
 end 

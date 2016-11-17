@@ -62,7 +62,7 @@ function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, ev
 
 	o.fireOption = _fireOption
 	o.shotPattern = _shotPattern
-	o.bulletSpeed = 250
+	o.bulletSpeed = 100
 	o.fireRate = _fireRate
 	o.fireTimer = Timer:new(o.fireRate, TimerModes.repeating)
 	-- max out the timer right off the bat so it fire immediately
