@@ -11,6 +11,8 @@ function ScoreManager:new ()
     o.scoreTokenSpriteSheetHeight = o.scoreTokenSpriteSheet:getHeight()
     o.scoreTokenSpriteSheetQuads = {}
     o.scoreTokenTotalFrameCount = 6
+    o.scoreTokenWidth = 16
+    o.scoreTokenHeight = 16
     for i=1,6 do
         o.scoreTokenSpriteSheetQuads[i] = love.graphics.newQuad((i-1)*16, 0, 16, 16, o.scoreTokenSpriteSheetWidth, o.scoreTokenSpriteSheetHeight)
     end
@@ -43,14 +45,16 @@ function ScoreManager:update(dt)
         self.scoreTokenList[i].x = self.scoreTokenList[i].x + self.scoreTokenList[i].vx 
         self.scoreTokenList[i].y = self.scoreTokenList[i].y + self.scoreTokenList[i].vy
         
-        -- 
-        if approxEqual(self.scoreTokenList[i].x, playerPos.x, 1) and approxEqual(self.scoreTokenList[i].y, playerPos.y, 1) then 
+        -- check if player collected a score token
+        local tempToken = self.scoreTokenList[i]
+        if rectRect(playerPos.x, playerPos.y, playerPos.width, playerPos.height, tempToken.x, tempToken.y, tempToken.width, tempToken.height) then 
             self.currentScore = self.currentScore + self.scoreTokenList[i].value
             table.remove(self.scoreTokenList,i)
-        -- update lifetime 
+            print(self.currentScore)
+        -- else update lifetime and remove if it's done
         elseif self.scoreTokenList[i].lifetimeTimer:isComplete(dt) then
             table.remove(self.scoreTokenList, i)
-        -- fade the colour if it's almost done
+        -- else fade the colour if it's almost done
         else
             if self.scoreTokenList[i].lifetimeTimer:percentComplete() > 0.7 then 
                 self.scoreTokenList[i].fadeColour = 100
@@ -68,6 +72,10 @@ function ScoreManager:draw()
     resetColor()
 end 
 
+function ScoreManager:getCurrentScore()
+    return self.currentScore
+end 
+
 function ScoreManager:newScoreToken(_x, _y, _value)
     table.insert(self.scoreTokenList, 
     {
@@ -75,10 +83,12 @@ function ScoreManager:newScoreToken(_x, _y, _value)
         y = _y,
         vx = 0,
         vy = 0,
+        width = 16,
+        height = 16,
         value = _value,
         frameIndex = 1,
         frameTimer = Timer:new(0.08, TimerModes.repeating),
-        lifetimeTimer = Timer:new(3, TimerModes.single),
+        lifetimeTimer = Timer:new(5, TimerModes.single),
         fadeColour = 255
     })
 end 

@@ -5,7 +5,7 @@ function Player:new ()
 	self.__index = self
 	
 
-	o.shipHitRadius = 5
+	o.shipHitRadius = 3
 	o.shipSprite = love.graphics.newImage("assets/sprites/96x96playerShip.png")
 	o.shipSprite:setFilter("nearest", "nearest")
 	o.shipWidth = o.shipSprite:getWidth()
@@ -65,7 +65,7 @@ function Player:draw()
 	love.graphics.draw(self.shipSprite, self.x, self.y)
 	-- draw the player hit circle
 	love.graphics.setColor(255,0,0)
-	love.graphics.circle("fill", centre.x, centre.y, self.shipHitRadius)
+	love.graphics.circle("fill", centre.x, centre.y, self.shipHitRadius+1)
 	resetColor()
 	-- draw the guns 
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerLeft"]	, centre.x + self.guns["lowerLeft"].xOffset 	, centre.y + self.guns["lowerLeft"].yOffset)

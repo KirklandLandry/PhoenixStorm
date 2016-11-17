@@ -32,17 +32,14 @@ function loadGame()
 	enemyManager:addEnemy(
 		1/2,
 		0.5,
-		ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
+		ENEMY_SHOOT_OPTIONS.shootWhileMoving,
 		SHOT_PATTERNS.circleBurstOutwards,
-		ENEMY_SHIP_SPRITES.orbEnemy,
+		ENEMY_SHIP_SPRITES.mediumEnemy1,
 		5,
 		{
 			newEnemyEvent(
 				ENEMY_MOVEMENT_EVENTS.move, 
 				newMoveEventArgs(topLeftToCentreCurve())),
-			newEnemyEvent(
-				ENEMY_MOVEMENT_EVENTS.wait, 
-				newWaitEventArgs(1)),
 			newEnemyEvent(
 				ENEMY_MOVEMENT_EVENTS.move, 
 				newMoveEventArgs(centreToTopRightCurve()))
@@ -77,8 +74,6 @@ function updateGame(dt)
 		}
 	)
 	end 
-
-
 	bulletManager:updateBullets(dt)
 	player:update(dt)
 	enemyManager:update(dt)
@@ -103,7 +98,7 @@ function love.focus(f)
 end
 
 function getCurrentPlayerPosition()
-	return {x = player.x, y = player.y}
+	return {x = player.x, y = player.y, width = player.shipWidth, height = player.shipHeight}
 end 
 
 function bulletCurrentPlayerCollision(ex, ey, er)

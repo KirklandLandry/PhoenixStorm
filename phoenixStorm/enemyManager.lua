@@ -5,7 +5,7 @@
 -- enemy manager should have "add enemy of type x" functions to save repititions
 -- when you get to the actual game structuring start making enemy types 
 
-ENEMY_SHIP_SPRITES = {orbEnemy = "32x32orbEnemy.png", }
+ENEMY_SHIP_SPRITES = {orbEnemy = "32x32orbEnemy.png", mediumEnemy1 = "64x64mediumEnemy1.png"}
 local spritePath = "assets/sprites/"
 
 EnemyManager = {}
@@ -17,6 +17,10 @@ function EnemyManager:new ()
 	o.enemySprites = {}
 	o.enemySprites[ENEMY_SHIP_SPRITES.orbEnemy] = love.graphics.newImage("assets/sprites/32x32orbEnemy.png")
 	o.enemySprites[ENEMY_SHIP_SPRITES.orbEnemy]:setFilter("nearest", "nearest")
+
+	o.enemySprites[ENEMY_SHIP_SPRITES.mediumEnemy1] = love.graphics.newImage("assets/sprites/64x64mediumEnemy1.png")
+	o.enemySprites[ENEMY_SHIP_SPRITES.mediumEnemy1]:setFilter("nearest", "nearest")
+
 
 	o.enemyList = {}
 
