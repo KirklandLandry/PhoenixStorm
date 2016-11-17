@@ -9,7 +9,7 @@ local player = nil
 
 bulletManager = nil 
 
-local testEnemy = nil 
+local enemyManager = nil
 
 -- BASE LOAD
 function loadGame()
@@ -19,8 +19,24 @@ function loadGame()
 	player = Player:new()
 	bulletManager = BulletManager:new()
 
-
-	testEnemy = Enemy:new()
+	enemyManager = EnemyManager:new()
+	enemyManager:addEnemy(
+		1/2,
+		0.5,
+		ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
+		SHOT_PATTERNS.circleBurstOutwards,
+		{
+			newEnemyEvent(
+				ENEMY_MOVEMENT_EVENTS.move, 
+				newMoveEventArgs(topLeftToCentreCurve())),
+			newEnemyEvent(
+				ENEMY_MOVEMENT_EVENTS.wait, 
+				newWaitEventArgs(1)),
+			newEnemyEvent(
+				ENEMY_MOVEMENT_EVENTS.move, 
+				newMoveEventArgs(centreToTopRightCurve()))
+		}
+	)
 
 end
 
@@ -29,18 +45,17 @@ end
 function updateGame(dt)	
 	if getKeyDown("escape") then love.event.quit() end 
 
-testEnemy:update(dt)
 
 	bulletManager:updateBullets(dt)
 	player:update(dt)
+	enemyManager:update(dt)
 end
 
 -- BASE DRAW 
 function drawGame()
 	player:draw()
 	bulletManager:drawBullets()
-
-testEnemy:draw()
+	enemyManager:draw()
 end
 
 -- window focus callback

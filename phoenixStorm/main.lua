@@ -10,12 +10,13 @@ require "bulletManager"
 require "enemy"
 require "enemyManager"
 require "collisions"
+require "bezierCurves"
 
 -- this is the actual physical window size 
 screenWidth = nil
 screenHeight = nil
 tileSize = 32
-
+GLOBAL_DEBUG = true
 -- called once on game initialization
 function love.load(arg)
 	math.randomseed(os.time())
