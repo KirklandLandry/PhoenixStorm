@@ -7,8 +7,8 @@ end
 -- http://www.wildbunny.co.uk/blog/2011/04/20/collision-detection-for-dummies/
 function rectCircleCollision(bx,by,bw,bh, cx,cy,cr)
 	-- find the closest edge to the circle within the rectangle
-	local closestX = math.clamp(circle.collider.pos.x, bx, bx + bw)
-	local closestY = math.clamp(circle.collider.pos.y, by, by + bh)
+	local closestX = math.clamp(cx, bx, bx + bw)
+	local closestY = math.clamp(cy, by, by + bh)
 	
 	-- calculate the distance between the circle's centre and this closest point 
 	local distanceX = cx - closestX 

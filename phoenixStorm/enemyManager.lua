@@ -23,8 +23,8 @@ function EnemyManager:new ()
 	return o
 end
 
-function EnemyManager:addEnemy(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, eventList)
-	table.insert(self.enemyList, Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, eventList) )
+function EnemyManager:addEnemy(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, _health, eventList)
+	table.insert(self.enemyList, Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, _health, eventList) )
 end 
 
 function EnemyManager:update(dt)
@@ -32,9 +32,10 @@ function EnemyManager:update(dt)
 		-- update enemy
 		self.enemyList[i]:update(dt)
 		-- if an enemy is exhausted all it's actions, despawn it
-		if self.enemyList[i].eventQueue:length() <= 0 then 
+		if self.enemyList[i].eventQueue:length() <= 0 or self.enemyList[i].health <= 0 then 
 			table.remove(self.enemyList, i)
-		end 		
+		end 	
+
 	end
 end 
 
@@ -43,4 +44,16 @@ function EnemyManager:draw()
 	for i=1,#self.enemyList do
 		self.enemyList[i]:draw(self.enemySprites[self.enemyList[i].spriteIndex])
 	end
+end 
+
+function EnemyManager:getEnemyCount()
+	return #self.enemyList
+end 
+
+function EnemyManager:getElementAt(index)
+	return self.enemyList[index]
+end 
+
+function EnemyManager:decreaseHealth(index)
+	self.enemyList[index].health = self.enemyList[index].health -1
 end 

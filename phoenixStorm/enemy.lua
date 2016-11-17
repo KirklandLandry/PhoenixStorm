@@ -46,7 +46,7 @@ function newMoveEventArgs(_curvePoints)
 end 
 
 Enemy = {}
-function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, eventList)
+function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, _health, eventList)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -54,9 +54,9 @@ function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, ev
 	o.x = -100
 	o.y = -100
 	o.moveSpeed = _moveSpeed
+	o.health = _health
 
 	o.spriteIndex = _sprite
-
 	o.shipWidth = 32--o.shipSprite:getWidth()
 	o.shipHeight = 32--o.shipSprite:getHeight()
 
@@ -76,7 +76,6 @@ function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, ev
 
 	return o
 end 
-
 
 function Enemy:update(dt)
 	if self.eventQueue:length() > 0 then 

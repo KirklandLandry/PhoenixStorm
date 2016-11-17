@@ -47,16 +47,9 @@ function BulletManager:newBullet(_x, _y, _vx, _vy, _owner)
 end 
 
 function BulletManager:updateBullets(dt)
-	for i=#self.bullets,1,-1 do
-
-		-- check if an enemy bullet hit the player
-		if self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
-			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
-				print("enemy hit player")
-			end 
-		end 
-
-
+	local bulletCount = #self.bullets
+	print(bulletCount)
+	for i=bulletCount,1,-1 do	
 		-- update position
 		self.bullets[i].x = self.bullets[i].x + (self.bullets[i].vx * dt) 
 		self.bullets[i].y = self.bullets[i].y + (self.bullets[i].vy * dt) 
@@ -67,12 +60,34 @@ function BulletManager:updateBullets(dt)
 				self.bullets[i].animationIndex = 1
 			end 
 		end 
-
 		-- check if it went off screen, despawn if it did
 		if self.bullets[i].x > screenWidth or self.bullets[i].x + self.bulletdiameter < 0 or 
 		   self.bullets[i].y > screenHeight or self.bullets[i].y + self.bulletdiameter < 0	then 
 		   table.remove(self.bullets, i)
 		end  
+
+		-- check if an enemy bullet hit the player
+		if self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
+			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
+				print("enemy hit player")
+				playerHit()
+				table.remove(self.bullets, i)
+			end 
+		end 
+
+		-- check if a player bullet hit an enemy
+		if self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.player then 
+			local enemyCount = enemyManager:getEnemyCount()
+			for j=enemyCount,1,-1 do
+				local temp = enemyManager:getElementAt(j)
+				if rectCircleCollision(temp.x,temp.y,temp.shipWidth,temp.shipHeight, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
+					print("player hit enemy")
+					enemyManager:decreaseHealth(j)
+					table.remove(self.bullets, i)
+				end 
+			end
+		end 
+
 	end
 end 
 
@@ -81,11 +96,9 @@ function BulletManager:drawBullets()
 		if self.bullets[i].owner == BULLET_OWNER_TYPES.player then 
 			love.graphics.draw(self.greenBulletSpriteSheet, self.greenBulletSpriteSheetQuads[self.bullets[i].animationIndex], math.round(self.bullets[i].x), math.round(self.bullets[i].y))
 		end 
-
 		if self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
 			love.graphics.draw(self.purpleBulletSpriteSheet, self.purpleBulletSpriteSheetQuads[self.bullets[i].animationIndex], math.round(self.bullets[i].x), math.round(self.bullets[i].y))
 		end 
-		love.graphics.circle("line", self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius)
+		--love.graphics.circle("line", self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius)
 	end
-
 end 

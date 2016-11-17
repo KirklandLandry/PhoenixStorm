@@ -15,8 +15,9 @@ require "bezierCurves"
 -- this is the actual physical window size 
 screenWidth = nil
 screenHeight = nil
-tileSize = 32
+-- for debug stuff. ye.
 GLOBAL_DEBUG = true
+
 -- called once on game initialization
 function love.load(arg)
 	math.randomseed(os.time())
@@ -39,6 +40,7 @@ end
 function love.update(dt)
 	updateFramerateLock()
 
+	-- prevent large jumps in framerate
 	if dt > 0.2 then dt = 0.016 end 
 
 	updateGame(dt)
@@ -48,7 +50,7 @@ end
 function love.draw()
 	resetColor()
 	drawGame()
-	drawFramerateLock(false)
+	drawFramerateLock(true)
 end
 
 function resetColor()
