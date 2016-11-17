@@ -3,7 +3,7 @@
 
 
 EnemyManager = {}
-function Player:new ()
+function EnemyManager:new ()
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self

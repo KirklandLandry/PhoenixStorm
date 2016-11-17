@@ -17,7 +17,7 @@ function newEnemyEvent(_eventType, args)
 	if _eventType == ENEMY_MOVEMENT_EVENTS.wait then 
 		return {
 			eventType = ENEMY_MOVEMENT_EVENTS.wait,
-			timer = Timer:new(args.time, args.mode)
+			timer = Timer:new(args.time, TimerModes.single)
 		}
 	elseif _eventType == ENEMY_MOVEMENT_EVENTS.move then 
 		return {
@@ -31,10 +31,9 @@ function newEnemyEvent(_eventType, args)
 	return nil
 end 
 
-function newWaitEventArgs(_time, _mode)
+function newWaitEventArgs(_time)
 	return {
-		time = _time,
-		mode = _mode
+		time = _time
 	}
 end 
 
@@ -66,12 +65,36 @@ function Enemy:new()
 	o.renderPath = true
 
 	o.eventQueue = Queue:new()
-	o.eventQueue:enqueue(newEnemyEvent(
+	--[[o.eventQueue:enqueue(newEnemyEvent(
 		ENEMY_MOVEMENT_EVENTS.move, 
 		newMoveEventArgs(topLeftBottomRightSCurve(o.shipWidth, o.shipHeight))
+		))]]
+
+	o.eventQueue:enqueue(newEnemyEvent(
+		ENEMY_MOVEMENT_EVENTS.move, 
+		newMoveEventArgs(
+			{
+			-o.shipWidth,-o.shipHeight,
+			0,screenHeight/2, 
+			screenWidth/2, screenHeight/2
+			})
+		))
+
+	o.eventQueue:enqueue(newEnemyEvent(
+		ENEMY_MOVEMENT_EVENTS.wait, 
+		newWaitEventArgs(1)
 		))
 
 
+	o.eventQueue:enqueue(newEnemyEvent(
+		ENEMY_MOVEMENT_EVENTS.move, 
+		newMoveEventArgs(
+			{
+			screenWidth/2, screenHeight/2,
+			screenWidth, screenHeight/2, 
+			screenWidth, screenHeight
+			})
+		))
 
 	--[[
 	o.bulletSpeed = 650
@@ -85,14 +108,9 @@ end
 
 
 function Enemy:update(dt)
-
-	print(self.eventQueue:length())
-
 	if self.eventQueue:length() > 0 then 
 		if self.eventQueue:peek().eventType == ENEMY_MOVEMENT_EVENTS.move then 
 			self.eventQueue:peek().percentComplete = self.eventQueue:peek().percentComplete + (self.moveSpeed * dt)
-
-			print(self.eventQueue:peek().percentComplete)
 
 			if self.eventQueue:peek().percentComplete > 1 then 
 				self.eventQueue:dequeue()
@@ -101,15 +119,21 @@ function Enemy:update(dt)
 				self.x = x
 				self.y = y
 			end 
-
+		elseif self.eventQueue:peek().eventType == ENEMY_MOVEMENT_EVENTS.wait then 
+			if self.eventQueue:peek().timer:isComplete(dt) then 
+				self.eventQueue:dequeue()
+			end 
 		end 
 	end 
-	
-	
 end 
 
 function Enemy:draw()
 	love.graphics.draw(self.shipSprite, self.x, self.y)
+
+	if self.eventQueue:length() > 0 and self.eventQueue:peek().eventType == ENEMY_MOVEMENT_EVENTS.move and self.renderPath then 
+		love.graphics.line(self.eventQueue:peek().curve:render())
+	end 
+
 end 	
 
 
