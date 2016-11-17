@@ -25,6 +25,7 @@ function loadGame()
 		0.5,
 		ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
 		SHOT_PATTERNS.circleBurstOutwards,
+		ENEMY_SHIP_SPRITES.orbEnemy,
 		{
 			newEnemyEvent(
 				ENEMY_MOVEMENT_EVENTS.move, 

@@ -46,7 +46,7 @@ function newMoveEventArgs(_curvePoints)
 end 
 
 Enemy = {}
-function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, eventList)
+function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, eventList)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -55,12 +55,10 @@ function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, eventList)
 	o.y = -100
 	o.moveSpeed = _moveSpeed
 
+	o.spriteIndex = _sprite
 
-	-- bad. take an index, enemy manager will keep 1 instance of the sprite for each ship
-	o.shipSprite = love.graphics.newImage("assets/sprites/32x32orbEnemy.png")
-	o.shipSprite:setFilter("nearest", "nearest")
-	o.shipWidth = o.shipSprite:getWidth()
-	o.shipHeight = o.shipSprite:getHeight()
+	o.shipWidth = 32--o.shipSprite:getWidth()
+	o.shipHeight = 32--o.shipSprite:getHeight()
 
 	o.fireOption = _fireOption
 	o.shotPattern = _shotPattern
@@ -75,7 +73,6 @@ function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, eventList)
 	for i=1,#eventList do
 		o.eventQueue:enqueue(eventList[i])
 	end
-
 
 	return o
 end 
@@ -114,9 +111,9 @@ function Enemy:update(dt)
 	end 
 end 
 
-function Enemy:draw()
+function Enemy:draw(sprite)
 	-- draw the ship sprite
-	love.graphics.draw(self.shipSprite, self.x, self.y)
+	love.graphics.draw(sprite, self.x, self.y)
 	-- draw the current movement path, if there is one and if it's in debug mode
 	if self.eventQueue:length() > 0 and self.eventQueue:peek().eventType == ENEMY_MOVEMENT_EVENTS.move and self.renderPath then 
 		love.graphics.line(self.eventQueue:peek().curve:render())

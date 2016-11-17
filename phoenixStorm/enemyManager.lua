@@ -5,32 +5,42 @@
 -- enemy manager should have "add enemy of type x" functions to save repititions
 -- when you get to the actual game structuring start making enemy types 
 
+ENEMY_SHIP_SPRITES = {orbEnemy = "32x32orbEnemy.png", }
+local spritePath = "assets/sprites/"
+
 EnemyManager = {}
 function EnemyManager:new ()
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
-	
-	o.enemyList = {}
 
+	o.enemySprites = {}
+	o.enemySprites[ENEMY_SHIP_SPRITES.orbEnemy] = love.graphics.newImage("assets/sprites/32x32orbEnemy.png")
+	o.enemySprites[ENEMY_SHIP_SPRITES.orbEnemy]:setFilter("nearest", "nearest")
+
+	o.enemyList = {}
 
 	return o
 end
 
-function EnemyManager:addEnemy(_moveSpeed, _fireRate, _fireOption, _shotPattern, eventList)
-	table.insert(
-		self.enemyList, Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, eventList)
-	)
+function EnemyManager:addEnemy(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, eventList)
+	table.insert(self.enemyList, Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, eventList) )
 end 
 
 function EnemyManager:update(dt)
-	for i=1,#self.enemyList do
+	for i=#self.enemyList,1,-1 do
+		-- update enemy
 		self.enemyList[i]:update(dt)
+		-- if an enemy is exhausted all it's actions, despawn it
+		if self.enemyList[i].eventQueue:length() <= 0 then 
+			table.remove(self.enemyList, i)
+		end 		
 	end
 end 
 
 function EnemyManager:draw()
+	-- draw enemy
 	for i=1,#self.enemyList do
-		self.enemyList[i]:draw()
+		self.enemyList[i]:draw(self.enemySprites[self.enemyList[i].spriteIndex])
 	end
 end 
