@@ -7,6 +7,9 @@ require "stack"
 require "sound"
 require "player"
 require "bulletManager"
+require "enemy"
+require "enemyManager"
+
 -- this is the actual physical window size 
 screenWidth = nil
 screenHeight = nil
@@ -33,6 +36,9 @@ end
 -- called once per frame
 function love.update(dt)
 	updateFramerateLock()
+
+	if dt > 0.2 then dt = 0.016 end 
+
 	updateGame(dt)
 end 
 

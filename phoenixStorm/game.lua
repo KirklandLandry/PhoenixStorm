@@ -9,10 +9,7 @@ local player = nil
 
 bulletManager = nil 
 
-
-local testRect = nil
-
-local bcurve = nil
+local testEnemy = nil 
 
 -- BASE LOAD
 function loadGame()
@@ -22,11 +19,9 @@ function loadGame()
 	player = Player:new()
 	bulletManager = BulletManager:new()
 
-	testRect = {x = screenWidth, y = 0, i = 0}
-	bcurve = love.math.newBezierCurve({0,0,
-	0,screenHeight, 
-	screenWidth, 0, 
-	screenWidth, screenHeight})
+
+	testEnemy = Enemy:new()
+
 end
 
 
@@ -34,11 +29,7 @@ end
 function updateGame(dt)	
 	if getKeyDown("escape") then love.event.quit() end 
 
-
-	testRect.i = testRect.i + dt / 5
-	local x,y = bcurve:evaluate(testRect.i)
-	testRect.x = x
-	testRect.y = y
+testEnemy:update(dt)
 
 	bulletManager:updateBullets(dt)
 	player:update(dt)
@@ -48,9 +39,8 @@ end
 function drawGame()
 	player:draw()
 	bulletManager:drawBullets()
-	love.graphics.line(bcurve:render())
 
-	love.graphics.rectangle("fill", testRect.x, testRect.y, 32,32)
+	testEnemy:draw()
 end
 
 -- window focus callback
