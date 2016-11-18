@@ -14,6 +14,7 @@ require "bezierCurves"
 require "effectManager"
 require "scoreManager"
 require "level1"
+require "level1Boss"
 require "fonts"
 
 -- this is the actual physical window size 

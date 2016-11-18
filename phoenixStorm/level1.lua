@@ -26,6 +26,8 @@ function Level1:new ()
 
     -- level time 
     o.levelProgress = 0
+    -- level ends / boss starts at 70 seconds
+    o.bossTime = 70
     -- enemy spawn points
     o.levelTriggers = {
     	-- left to right arc through centre
@@ -55,8 +57,8 @@ function Level1:new ()
     	-- s curve an shoot singles 
     	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Left, 4, 0.4, 55),
     	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 4, 0.4, 55),
-    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Left, 7, 0.2, 60),
-    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 7, 0.2, 60)
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Left, 7, 0.3, 61),
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 7, 0.3, 61)
 	}
 	o.activeLevelTriggers = {}	
 
@@ -65,12 +67,13 @@ function Level1:new ()
     o.backgroundElementSprites[BACKGROUND_ELEMENT_TYPE.yellowSun]:setFilter("nearest", "nearest")
 
 
-
     o.backgroundElementList = {
         bottomLayer = {},
         topLayer = {}
     }
 
+    -- the last part is an approximation of where it should be if you change the start time 
+    o:addBackgroundElement(BACKGROUND_ELEMENT_TYPE.yellowSun, 10, o.levelProgress * 10 * 0.016 * 60)
 
     return o
 end
@@ -132,6 +135,10 @@ function Level1:draw()
     end
 end 
 
+function Level1:isLevelComplete()
+	return (self.levelProgress >= self.bossTime)
+end 
+
 -- the enemyType, how many to spawn, delay between spawns, what time in the level they spawn
 function Level1:addSpawnPointTrigger(_enemy, _count, _spawnDelayTime, _entryTime)
 	return {
@@ -151,11 +158,11 @@ function Level1:addSpawnPoint(_enemy, _count, _spawnDelayTime)
 	})
 end 
 
-function Level1:addBackgroundElement(enemyType, speed)
+function Level1:addBackgroundElement(enemyType, speed, startingOffsetY)
     if enemyType == BACKGROUND_ELEMENT_TYPE.yellowSun then 
         table.insert(self.backgroundElementList.bottomLayer, {
                 x = 0,--math.random(0, screenWidth/3),
-                y = -self.backgroundElementSprites[BACKGROUND_ELEMENT_TYPE.yellowSun]:getHeight(),
+                y = -self.backgroundElementSprites[BACKGROUND_ELEMENT_TYPE.yellowSun]:getHeight() + startingOffsetY,
                 spriteIndex = BACKGROUND_ELEMENT_TYPE.yellowSun,
                 scrollSpeed = speed
         })
@@ -292,7 +299,7 @@ enemyManager:addEnemy(
 			ENEMY_SHOOT_OPTIONS.shootWhileMoving,
 			SHOT_PATTERNS.singleShotTowardsPlayer,
 			ENEMY_SHIP_SPRITES.orbEnemy,
-			7,
+			6,
 			{
 				newEnemyEvent(
 					ENEMY_MOVEMENT_EVENTS.move, 

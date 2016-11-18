@@ -8,6 +8,7 @@
 -- just draw a circle and despawn anything that goes inside the circle
 -- grow the circle from the player position
 
+-- screen shake while the boss is moving into position!!!
 
 -- for saving files as json 
 -- https://github.com/craigmj/json4lua
@@ -25,6 +26,7 @@ enemyManager = nil
 effectManager = nil
 scoreManager = nil
 level1 = nil
+level1Boss= nil
 
 -- BASE LOAD
 function loadGame()
@@ -34,7 +36,7 @@ function loadGame()
 	player = Player:new()
 
 	level1 = Level1:new()
-	level1:addBackgroundElement(BACKGROUND_ELEMENT_TYPE.yellowSun, 10)
+	level1Boss = Level1Boss:new()
 
 	bulletManager = BulletManager:new()
 	effectManager = EffectManager:new()
@@ -62,28 +64,6 @@ function updateGame(dt)
 end
 
 function updateStage(dt)
-	--[[if getKeyPress("h") then 
-		enemyManager:addEnemy(
-			1/2,
-			0.2,
-			400,
-			ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
-			SHOT_PATTERNS.circleTowardsPlayer,
-			ENEMY_SHIP_SPRITES.orbEnemy,
-			5,
-			{
-				newEnemyEvent(
-					ENEMY_MOVEMENT_EVENTS.move, 
-					newMoveEventArgs(topLeftToCentreCurve())),
-				newEnemyEvent(
-					ENEMY_MOVEMENT_EVENTS.wait, 
-					newWaitEventArgs(1)),
-				newEnemyEvent(
-					ENEMY_MOVEMENT_EVENTS.move, 
-					newMoveEventArgs(centreToTopRightCurve()))
-			}
-		)
-	end ]]
 	bulletManager:updateBullets(dt)
 	player:update(dt)
 	enemyManager:update(dt)
@@ -91,6 +71,9 @@ function updateStage(dt)
 	scoreManager:update(dt)
 	checkIfPlayerDead()
 	level1:update(dt)
+	if level1:isLevelComplete() then 
+		gameState:push(GAME_STATES.boss)
+	end 
 end 
 
 function updateBoss(dt)
@@ -100,7 +83,7 @@ function updateBoss(dt)
 	effectManager:update(dt)
 	scoreManager:update(dt)
 	checkIfPlayerDead()
-	level1:update(dt)
+	--level1:update(dt)
 end 
 
 function updatePaused(dt)
@@ -145,7 +128,7 @@ function drawStage()
 	scoreManager:draw() 
 	drawUi()	
 
-	love.graphics.circle("line", player:getCentre().x, player:getCentre().y, player.shipHitRadius)
+	--love.graphics.circle("line", player:getCentre().x, player:getCentre().y, player.shipHitRadius)
 end 
 
 function drawBoss()
@@ -153,6 +136,7 @@ function drawBoss()
 	player:draw()
 	bulletManager:drawBullets()
 	enemyManager:draw()
+	level1Boss:draw()
 	effectManager:draw()
 	scoreManager:draw()
 	drawUi()
@@ -167,7 +151,8 @@ function drawTitle()
 end	 
 
 function drawGameOver()
-	drawText("press h to restart", 32, 32)
+	drawText("game over", 32, 32)
+	drawText("press h to restart", 32, 64)
 end 
 
 function drawUi()
