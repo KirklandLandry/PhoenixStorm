@@ -16,6 +16,7 @@ function Level1Boss:new ()
 end
 
 function Level1Boss:update(dt)
+	-- the initial action, lerp to the starting position
 	if movingToStartPoint then 
 
 	else 
@@ -29,3 +30,7 @@ function Level1Boss:draw()
 
 end 
 
+-- don't let player move to start pos
+function Level1Boss:isMovingToStartPosition()
+	return self.isMovingToStartPosition
+end 
