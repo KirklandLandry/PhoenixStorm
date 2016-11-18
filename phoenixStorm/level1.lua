@@ -10,7 +10,9 @@ enemy3Left = "enemy3Left",
 enemy3Right = "enemy3Right", 
 enemy4 = "enemy4",
 enemy5Left = "enemy5Left",
-enemy5Right = "enemy5Right"}
+enemy5Right = "enemy5Right",
+enemy6Left = "enemy6Left",
+enemy6Right = "enemy6Right"}
 
 -- add white speed lines for the illusion of speed
 -- would need a table reverse function (special since it would have to flip every 2)
@@ -47,10 +49,14 @@ function Level1:new ()
     	-- stick an enemy in the centre and just shoot single shots
     	self:addSpawnPointTrigger(ENEMY_TYPE.enemy4, 1, 0.3, 42),
     	-- left to right arc through centre
-    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy1, 3, 0.5, 50),
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy1, 3, 0.5, 48),
     	-- right to left arc through centre
-    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy2, 3, 0.5, 50),
-
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy2, 3, 0.5, 48),
+    	-- s curve an shoot singles 
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Left, 4, 0.4, 55),
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 4, 0.4, 55),
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Left, 7, 0.2, 60),
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 7, 0.2, 60)
 	}
 	o.activeLevelTriggers = {}	
 
@@ -172,6 +178,10 @@ function enemySpawnSelector(enemyType)
 		SpawnEnemy5(topLeftBottomRightSCurve(0, -96))
 	elseif enemyType == ENEMY_TYPE.enemy5Right then 
 		SpawnEnemy5(topRightBottomLeftSCurve(0, -96))
+	elseif enemyType == ENEMY_TYPE.enemy6Left then 
+		SpawnEnemy6(topLeftBottomRightSCurve(0, -96))
+	elseif enemyType == ENEMY_TYPE.enemy6Right then 
+		SpawnEnemy6(topRightBottomLeftSCurve(0, -96))
 	end 
 end 
 
@@ -242,14 +252,14 @@ enemyManager:addEnemy(
 			ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
 			SHOT_PATTERNS.singleShotTowardsPlayer,
 			ENEMY_SHIP_SPRITES.mediumEnemy1,
-			80,
+			85,
 			{
 				newEnemyEvent(
 					ENEMY_MOVEMENT_EVENTS.move, 
 					newMoveEventArgs(topLeftToCentreCurve())),
 				newEnemyEvent(
 					ENEMY_MOVEMENT_EVENTS.wait, 
-					newWaitEventArgs(7,5)),
+					newWaitEventArgs(8)),
 				newEnemyEvent(
 					ENEMY_MOVEMENT_EVENTS.move, 
 					newMoveEventArgs(centreToBottomRightCurve())),
@@ -274,4 +284,20 @@ enemyManager:addEnemy(
 		)
 end 
 
+function SpawnEnemy6(curve)
+enemyManager:addEnemy(
+			1/2.5,
+			0.25,
+			200,
+			ENEMY_SHOOT_OPTIONS.shootWhileMoving,
+			SHOT_PATTERNS.singleShotTowardsPlayer,
+			ENEMY_SHIP_SPRITES.orbEnemy,
+			7,
+			{
+				newEnemyEvent(
+					ENEMY_MOVEMENT_EVENTS.move, 
+					newMoveEventArgs(curve)),
+			}
+		)
+end 
 
