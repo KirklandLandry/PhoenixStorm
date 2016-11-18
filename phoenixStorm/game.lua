@@ -34,29 +34,12 @@ function loadGame()
 	player = Player:new()
 
 	level1 = Level1:new()
-	level1:addBackgroundElement(BACKGROUND_ELEMENT_TYPE.yellowSun, 50)
+	level1:addBackgroundElement(BACKGROUND_ELEMENT_TYPE.yellowSun, 10)
 
 	bulletManager = BulletManager:new()
 	effectManager = EffectManager:new()
 	scoreManager = ScoreManager:new()
 	enemyManager = EnemyManager:new()
-	--[[enemyManager:addEnemy(
-		1/3,
-		0.5,
-		100,
-		ENEMY_SHOOT_OPTIONS.shootWhileMoving,
-		SHOT_PATTERNS.circleBurstOutwards,
-		ENEMY_SHIP_SPRITES.mediumEnemy1,
-		30,
-		{
-			newEnemyEvent(
-				ENEMY_MOVEMENT_EVENTS.move, 
-				newMoveEventArgs(topLeftToCentreCurve())),
-			newEnemyEvent(
-				ENEMY_MOVEMENT_EVENTS.move, 
-				newMoveEventArgs(centreToTopRightCurve()))
-		}
-	)]]
 
 end
 
@@ -79,7 +62,7 @@ function updateGame(dt)
 end
 
 function updateStage(dt)
-	if getKeyPress("h") then 
+	--[[if getKeyPress("h") then 
 		enemyManager:addEnemy(
 			1/2,
 			0.2,
@@ -100,7 +83,7 @@ function updateStage(dt)
 					newMoveEventArgs(centreToTopRightCurve()))
 			}
 		)
-	end 
+	end ]]
 	bulletManager:updateBullets(dt)
 	player:update(dt)
 	enemyManager:update(dt)
@@ -161,6 +144,8 @@ function drawStage()
 	effectManager:draw()
 	scoreManager:draw() 
 	drawUi()	
+
+	love.graphics.circle("line", player:getCentre().x, player:getCentre().y, player.shipHitRadius)
 end 
 
 function drawBoss()

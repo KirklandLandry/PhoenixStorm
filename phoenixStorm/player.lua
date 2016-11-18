@@ -9,7 +9,7 @@ function Player:new ()
 	o.lives = 3 
 	o.playerSpawning = false
 	o.respawnTimer = Timer:new(1, TimerModes.single)
-	o.invincibilityTimer = Timer:new(1, TimerModes.single)
+	o.invincibilityTimer = Timer:new(2, TimerModes.single)
 	o.invincibilityTimer:maxOut()
 	o.bombs = 3
 	o.shipSprite = love.graphics.newImage("assets/sprites/96x96playerShip.png")
@@ -19,13 +19,13 @@ function Player:new ()
 
 	o.x = screenWidth/2 - o.shipWidth/2
 	o.y = screenHeight - o.shipHeight
-	o.moveSpeed = 310
-	o.originalMoveSpeed = 310
-	o.firingMoveSpeed = o.originalMoveSpeed * 0.55
+	o.moveSpeed = 340
+	o.originalMoveSpeed = 340
+	o.firingMoveSpeed = o.originalMoveSpeed * 0.35
 	
 	o.currentlyFiring = false
 	o.bulletSpeed = 650
-	o.fireRate = 0.08
+	o.fireRate = 0.07
 	o.fireTimer = Timer:new(o.fireRate, TimerModes.single)
 	o.canFire = true 
 
@@ -134,8 +134,9 @@ function Player:updatePosition(dt)
 end 
 
 function Player:boundaryCollisions()
+	local centre = self:getCentre()
 	-- check and resolve collision with left and right wall
-	if self.x < 0 then 
+	--[[if self.x < 0 then 
 		self.x = 0
 	elseif self.x + self.shipWidth > screenWidth then 
 		self.x = screenWidth - self.shipWidth
@@ -145,7 +146,20 @@ function Player:boundaryCollisions()
 		self.y = 0
 	elseif self.y + self.shipHeight > screenHeight then 
 		self.y = screenHeight - self.shipHeight
-	end 
+	end ]]
+
+	if self.x + self.shipWidth/2 < 0 then 
+		self.x = -self.shipWidth/2
+	elseif self.x + self.shipWidth/2 > screenWidth then 
+		self.x = screenWidth - self.shipWidth/2
+	end 	
+	-- check and resolve collision with top and bottom wall
+	if self.y  + self.shipWidth/2 < 0 then 
+		self.y = - self.shipWidth/2
+	elseif self.y + self.shipHeight/2 > screenHeight then 
+		self.y = screenHeight - self.shipHeight/2
+	end
+
 end 
 
 function Player:updateFiring(dt)

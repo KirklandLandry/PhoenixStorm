@@ -66,7 +66,7 @@ function BulletManager:updateBullets(dt)
 		   table.remove(self.bullets, i)		  
 		-- check if an enemy bullet hit the player
 		elseif self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
-			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
+			if bulletCurrentPlayerCollision(self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius-1) then 
 				playerHit()
 				table.remove(self.bullets, i)
 			end 
@@ -95,6 +95,6 @@ function BulletManager:drawBullets()
 		if self.bullets[i].owner == BULLET_OWNER_TYPES.enemy then 
 			love.graphics.draw(self.purpleBulletSpriteSheet, self.purpleBulletSpriteSheetQuads[self.bullets[i].animationIndex], math.round(self.bullets[i].x), math.round(self.bullets[i].y))
 		end 
-		--love.graphics.circle("line", self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius)
+		love.graphics.circle("line", self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius)
 	end
 end 
