@@ -9,6 +9,11 @@
 -- grow the circle from the player position
 
 
+-- for saving files as json 
+-- https://github.com/craigmj/json4lua
+-- https://love2d.org/forums/viewtopic.php?f=4&t=10197
+-- https://www.google.ca/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=love2d%20save%20system
+
 local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver"}
 local gameState = nil
 
@@ -19,6 +24,7 @@ bulletManager = nil
 enemyManager = nil
 effectManager = nil
 scoreManager = nil
+level1 = nil
 
 -- BASE LOAD
 function loadGame()
@@ -26,6 +32,9 @@ function loadGame()
 	gameState:push(GAME_STATES.title)
 
 	player = Player:new()
+
+	level1 = Level1:new()
+	level1:addBackgroundElement(BACKGROUND_ELEMENT_TYPE.yellowSun, 50)
 
 	bulletManager = BulletManager:new()
 	effectManager = EffectManager:new()
@@ -98,6 +107,7 @@ function updateStage(dt)
 	effectManager:update(dt)
 	scoreManager:update(dt)
 	checkIfPlayerDead()
+	level1:update(dt)
 end 
 
 function updateBoss(dt)
@@ -107,6 +117,7 @@ function updateBoss(dt)
 	effectManager:update(dt)
 	scoreManager:update(dt)
 	checkIfPlayerDead()
+	level1:update(dt)
 end 
 
 function updatePaused(dt)
@@ -143,15 +154,17 @@ function drawGame()
 end
 
 function drawStage()
+	level1:draw()
 	player:draw()
 	bulletManager:drawBullets()
 	enemyManager:draw()
 	effectManager:draw()
 	scoreManager:draw() 
-	drawUi()
+	drawUi()	
 end 
 
 function drawBoss()
+	level1:draw()
 	player:draw()
 	bulletManager:drawBullets()
 	enemyManager:draw()

@@ -13,14 +13,14 @@ require "collisions"
 require "bezierCurves"
 require "effectManager"
 require "scoreManager"
-require "scrollingBackground"
+require "level1"
 require "fonts"
 
 -- this is the actual physical window size 
 screenWidth = nil
 screenHeight = nil
 -- for debug stuff. ye.
-GLOBAL_DEBUG = true
+GLOBAL_DEBUG = false
 
 -- called once on game initialization
 function love.load(arg)
