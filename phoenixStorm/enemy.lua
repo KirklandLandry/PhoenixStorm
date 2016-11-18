@@ -3,7 +3,7 @@ ENEMY_MOVEMENT_EVENTS = {move = "move", wait = "wait"}
 ENEMY_SHOOT_OPTIONS	 = {shootWhileMoving = "shootWhileMoving", shootWhileWaiting = "shootWhileWaiting"}
 
 -- can you index functions? something to look up later. would be much better
-SHOT_PATTERNS = {scattershotTowardsPlayer = "scattershotTowardsPlayer", circleBurstOutwards = "circleBurstOutwards", singleShotTowardsPlayer = "singleShotTowardsPlayer"}
+SHOT_PATTERNS = {scattershotTowardsPlayer = "scattershotTowardsPlayer", circleBurstOutwards = "circleBurstOutwards", singleShotTowardsPlayer = "singleShotTowardsPlayer", circleTowardsPlayer = "circleTowardsPlayer"}
 
 -- enemy will have an event queue
 -- it'll be able to do things like
@@ -46,7 +46,7 @@ function newMoveEventArgs(_curvePoints)
 end 
 
 Enemy = {}
-function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, _health, eventList)
+function Enemy:new(_moveSpeed, _fireRate, _bulletSpeed, _fireOption, _shotPattern, _sprite, _health, eventList)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -62,7 +62,7 @@ function Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, _h
 
 	o.fireOption = _fireOption
 	o.shotPattern = _shotPattern
-	o.bulletSpeed = 100
+	o.bulletSpeed = _bulletSpeed
 	o.fireRate = _fireRate
 	o.fireTimer = Timer:new(o.fireRate, TimerModes.repeating)
 	-- max out the timer right off the bat so it fire immediately
@@ -128,18 +128,18 @@ function Enemy:updateShooting(dt)
 			self:scattershotTowardsPlayer()
 		elseif self.shotPattern == SHOT_PATTERNS.singleShotTowardsPlayer then 
 			self:singleShotTowardsPlayer()
+		elseif self.shotPattern == SHOT_PATTERNS.circleTowardsPlayer then 
+			self:circleTowardsPlayer(5, 35)
 		end 
 	end 
 end 
 
 -- write out a list of bullet patterns 
 function Enemy:scattershotTowardsPlayer()
+	local playerPos = getCurrentPlayerPosition()
 	for i=1,10 do
-		local playerPos = getCurrentPlayerPosition()
-		playerPos.x = playerPos.x + math.random(-32, 32)
-		playerPos.y = playerPos.y + math.random(-32, 32)
-		vx = playerPos.x - self.x
-		vy = playerPos.y - self.y
+		local vx = (playerPos.cx + math.random(-32, 32)) - self.x
+		local vy = (playerPos.cy + math.random(-32, 32)) - self.y
 		local mag = math.sqrt(math.pow(vx,2) + math.pow(vy,2))
 		vx = vx/mag * self.bulletSpeed
 		vy = vy/mag * self.bulletSpeed
@@ -156,10 +156,26 @@ function Enemy:circleBurstOutwards(degree)
 	end
 end 
 
+
+function Enemy:circleTowardsPlayer(degree, radius)
+	local playerPos = getCurrentPlayerPosition()
+	local vx = playerPos.cx - self.x
+	local vy = playerPos.cy - self.y
+	local mag = math.sqrt(math.pow(vx,2) + math.pow(vy,2))
+	vx = vx/mag * self.bulletSpeed
+	vy = vy/mag * self.bulletSpeed
+	for i=1,(360/degree) do
+		local rx = math.cos((i-1)*degree * math.pi/180) * radius
+		local ry = math.sin((i-1)*degree * math.pi/180) * radius
+		bulletManager:newBullet(self.x+rx, self.y+ry, vx, vy, BULLET_OWNER_TYPES.enemy)
+	end
+end 
+
+
 function Enemy:singleShotTowardsPlayer()
 	local playerPos = getCurrentPlayerPosition()
-	vx = playerPos.x - self.x
-	vy = playerPos.y - self.y
+	vx = playerPos.cx - self.x
+	vy = playerPos.cy - self.y
 	local mag = math.sqrt(math.pow(vx,2) + math.pow(vy,2))
 	vx = vx/mag * self.bulletSpeed
 	vy = vy/mag * self.bulletSpeed

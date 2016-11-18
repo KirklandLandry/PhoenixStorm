@@ -77,7 +77,7 @@ function BulletManager:updateBullets(dt)
 				local temp = enemyManager:getElementAt(enemyIndex)
 				if temp ~= nil and rectCircleCollision(temp.x,temp.y,temp.shipWidth,temp.shipHeight, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
 					enemyManager:decreaseHealth(enemyIndex)
-					effectManager:addEffect(EFFECT_TYPE.hit, temp.x, temp.y)
+					effectManager:addEffect(EFFECT_TYPE.hit, self.bullets[i].x, self.bullets[i].y)
 					table.remove(self.bullets, i)
 					-- break out of the enemyCount loop since the bullet will no longer exist (so you obviously can't check agaisnt it)
 					break

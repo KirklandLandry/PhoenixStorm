@@ -31,13 +31,14 @@ function loadGame()
 	effectManager = EffectManager:new()
 	scoreManager = ScoreManager:new()
 	enemyManager = EnemyManager:new()
-	enemyManager:addEnemy(
-		1/2,
+	--[[enemyManager:addEnemy(
+		1/3,
 		0.5,
+		100,
 		ENEMY_SHOOT_OPTIONS.shootWhileMoving,
 		SHOT_PATTERNS.circleBurstOutwards,
 		ENEMY_SHIP_SPRITES.mediumEnemy1,
-		5,
+		30,
 		{
 			newEnemyEvent(
 				ENEMY_MOVEMENT_EVENTS.move, 
@@ -46,7 +47,7 @@ function loadGame()
 				ENEMY_MOVEMENT_EVENTS.move, 
 				newMoveEventArgs(centreToTopRightCurve()))
 		}
-	)
+	)]]
 
 end
 
@@ -72,9 +73,10 @@ function updateStage(dt)
 	if getKeyPress("h") then 
 		enemyManager:addEnemy(
 			1/2,
-			0.5,
+			0.2,
+			400,
 			ENEMY_SHOOT_OPTIONS.shootWhileWaiting,
-			SHOT_PATTERNS.circleBurstOutwards,
+			SHOT_PATTERNS.circleTowardsPlayer,
 			ENEMY_SHIP_SPRITES.orbEnemy,
 			5,
 			{
@@ -95,6 +97,7 @@ function updateStage(dt)
 	enemyManager:update(dt)
 	effectManager:update(dt)
 	scoreManager:update(dt)
+	checkIfPlayerDead()
 end 
 
 function updateBoss(dt)
@@ -103,6 +106,7 @@ function updateBoss(dt)
 	enemyManager:update(dt)
 	effectManager:update(dt)
 	scoreManager:update(dt)
+	checkIfPlayerDead()
 end 
 
 function updatePaused(dt)
@@ -117,7 +121,9 @@ function updateTitle(dt)
 end	 
 
 function updateGameOver(dt)
+	if getKeyDown("h") then 
 
+	end 
 end 
 
 
@@ -136,32 +142,39 @@ function drawGame()
 	end 
 end
 
-function drawStage(dt)
+function drawStage()
+	player:draw()
+	bulletManager:drawBullets()
+	enemyManager:draw()
+	effectManager:draw()
+	scoreManager:draw() 
+	drawUi()
+end 
+
+function drawBoss()
 	player:draw()
 	bulletManager:drawBullets()
 	enemyManager:draw()
 	effectManager:draw()
 	scoreManager:draw()
+	drawUi()
 end 
 
-function drawBoss(dt)
-	player:draw()
-	bulletManager:drawBullets()
-	enemyManager:draw()
-	effectManager:draw()
-	scoreManager:draw()
-end 
-
-function drawPaused(dt)
+function drawPaused()
 
 end 
 
-function drawTitle(dt)
+function drawTitle()
 	drawText("press j to start", 32, 32)
 end	 
 
-function drawGameOver(dt)
+function drawGameOver()
+	drawText("press h to restart", 32, 32)
+end 
 
+function drawUi()
+	drawText("score: "..tostring(scoreManager:getCurrentScore()), 16, 16)
+	drawText("lives: "..tostring(player.lives), 16, 32)
 end 
 
 -- window focus callback
@@ -173,7 +186,7 @@ end
 
 -- the should really return the player centre position as well
 function getCurrentPlayerPosition()
-	return {x = player.x, y = player.y, width = player.shipWidth, height = player.shipHeight}
+	return {x = player.x, y = player.y, cx = player:getCentre().x, cy = player:getCentre().y, width = player.shipWidth, height = player.shipHeight}
 end 
 
 function bulletCurrentPlayerCollision(ex, ey, er)
@@ -185,3 +198,8 @@ function playerHit()
 	player:hitByEnemyBullet()
 end 
 
+function checkIfPlayerDead()
+	if player.lives < 0 then 
+		gameState:push(GAME_STATES.gameOver)
+	end 
+end 

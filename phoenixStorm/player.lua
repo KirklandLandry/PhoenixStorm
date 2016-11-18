@@ -82,8 +82,8 @@ function Player:updateRespawn(dt)
 	-- if it's time to respawn
 	if self.respawnTimer:isComplete(dt) then 
 		-- lerp towards starting position 
-		if not math.approxEqual(self.y,screenHeight-self.shipHeight,8) then 
-			self.y = self.y + ((((screenHeight-self.shipHeight) - self.y) * 0.07) * 80 * dt)
+		if not math.approxEqual(self.y,screenHeight-self.shipHeight - 10,8) then 
+			self.y = self.y + ((((screenHeight-self.shipHeight - 10) - self.y) * 0.07) * 80 * dt)
 		else 
 			self.playerSpawning = false
 			self.invincibilityTimer:reset()

@@ -27,8 +27,8 @@ function EnemyManager:new ()
 	return o
 end
 
-function EnemyManager:addEnemy(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, _health, eventList)
-	table.insert(self.enemyList, Enemy:new(_moveSpeed, _fireRate, _fireOption, _shotPattern, _sprite, _health, eventList) )
+function EnemyManager:addEnemy(_moveSpeed, _fireRate, _bulletSpeed, _fireOption, _shotPattern, _sprite, _health, eventList)
+	table.insert(self.enemyList, Enemy:new(_moveSpeed, _fireRate, _bulletSpeed, _fireOption, _shotPattern, _sprite, _health, eventList) )
 end 
 
 function EnemyManager:update(dt)
