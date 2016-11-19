@@ -44,7 +44,7 @@ function EffectManager:new ()
 	o.hitSpriteSheetQuads = {}
 	o.hitTotalFrameCount = 5
 	for i=1,o.hitTotalFrameCount do
-		o.hitSpriteSheetQuads[i] = love.graphics.newQuad((i-1)*32, 0, 64, 64, o.hitSpriteSheetWidth, o.hitSpriteSheetHeight)
+		o.hitSpriteSheetQuads[i] = love.graphics.newQuad((i-1)*32, 0, 32, 32, o.hitSpriteSheetWidth, o.hitSpriteSheetHeight)
 	end
 	
 	o.effectList = {}	

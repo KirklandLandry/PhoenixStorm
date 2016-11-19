@@ -73,6 +73,7 @@ function BulletManager:updateBullets(dt)
 		-- check if a player bullet hit an enemy
 		elseif self.bullets[i] ~= nil and self.bullets[i].owner == BULLET_OWNER_TYPES.player then 
 			local enemyCount = enemyManager:getEnemyCount()
+			local bulletRemoved = false
 			for enemyIndex=enemyCount,1,-1 do
 				local temp = enemyManager:getElementAt(enemyIndex)
 				if temp ~= nil and rectCircleCollision(temp.x,temp.y,temp.shipWidth,temp.shipHeight, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
@@ -83,6 +84,13 @@ function BulletManager:updateBullets(dt)
 					break
 				end 
 			end
+			-- check if a player bullet hit the boss
+			local boss = level1Boss:getHitbox()
+			if not bulletRemoved and not level1Boss:isMovingToStartPosition() and rectCircleCollision(boss.x,boss.y,boss.width,boss.height, self.bullets[i].x + self.bulletRadius, self.bullets[i].y + self.bulletRadius, self.bulletRadius) then 
+				level1Boss:takeDamage()
+				effectManager:addEffect(EFFECT_TYPE.hit, self.bullets[i].x, self.bullets[i].y)
+				table.remove(self.bullets, i)	
+			end 
 		end 
 	end
 end 
