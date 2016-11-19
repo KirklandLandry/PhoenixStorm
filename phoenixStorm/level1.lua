@@ -81,7 +81,7 @@ end
 function Level1:update(dt)
 	-- update the level time 
 	self.levelProgress = self.levelProgress + dt
-	print(self.levelProgress)
+	--print(self.levelProgress)
 	-- check spawn triggers 
     local count = #self.levelTriggers
     for i=count,1,-1 do  

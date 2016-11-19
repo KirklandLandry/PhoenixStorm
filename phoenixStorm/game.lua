@@ -28,6 +28,8 @@ scoreManager = nil
 level1 = nil
 level1Boss= nil
 
+local soundManager = "manager1"
+
 -- BASE LOAD
 function loadGame()
 	gameState = Stack:new()
@@ -42,6 +44,14 @@ function loadGame()
 	effectManager = EffectManager:new()
 	scoreManager = ScoreManager:new()
 	enemyManager = EnemyManager:new()
+
+	spam_newmanager(soundManager)
+	spam_newsource(soundManager, audioSources.stage1, audioSources.stage1, 'stream')
+	spam_setloopsource(soundManager, audioSources.stage1, false)
+	spam_newsource(soundManager, audioSources.boss1, audioSources.boss1, 'stream')
+	spam_setloopsource(soundManager, audioSources.boss1, true)
+	spam_newsource(soundManager, audioSources.smallExplosion, audioSources.smallExplosion, 'static')
+	spam_setloopsource(soundManager, audioSources.smallExplosion, false)
 
 end
 
@@ -61,9 +71,14 @@ function updateGame(dt)
 	elseif gameState:peek() == GAME_STATES.gameOver then 
 		updateGameOver(dt)
 	end 
+
+	love.audio.update(dt)
 end
 
 function updateStage(dt)
+	if not spam_issourceplaying(soundManager, audioSources.stage1) then
+		spam_playsource(soundManager, audioSources.stage1)
+  	end
 	bulletManager:updateBullets(dt)
 	player:update(dt)
 	enemyManager:update(dt)
@@ -185,4 +200,10 @@ function checkIfPlayerDead()
 	if player.lives < 0 then 
 		gameState:push(GAME_STATES.gameOver)
 	end 
+end 
+
+
+function playSoundEffect(effect)
+	--spam_playsource(soundManager, effect)
+	love.audio.play(effect, "static", false)
 end 

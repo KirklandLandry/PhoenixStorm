@@ -51,6 +51,7 @@ function ScoreManager:update(dt)
         if rectRectCollision(playerPos.x, playerPos.y, playerPos.width, playerPos.height, tempToken.x, tempToken.y, tempToken.width, tempToken.height) then 
             self.currentScore = self.currentScore + self.scoreTokenList[i].value
             table.remove(self.scoreTokenList,i)
+            playSoundEffect(audioSources.scoreToken)
         -- else update lifetime and remove if it's done
         elseif self.scoreTokenList[i].lifetimeTimer:isComplete(dt) then
             table.remove(self.scoreTokenList, i)

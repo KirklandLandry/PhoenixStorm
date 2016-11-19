@@ -39,10 +39,12 @@ function EnemyManager:update(dt)
 		if self.enemyList[i].eventQueue:length() <= 0 or self.enemyList[i].health <= 0  then 
 			if self.enemyList[i].health <= 0  then 
 				effectManager:addEffect(EFFECT_TYPE.explosion, self.enemyList[i].x, self.enemyList[i].y)
+				playSoundEffect(audioSources.smallExplosion)
 				-- enemy score value should come from the enemy, not just 10
 				scoreManager:newScoreTokenGroup(self.enemyList[i].x, self.enemyList[i].y, 10)
 			end 
 			table.remove(self.enemyList, i)
+
 		end 	
 	end
 end 

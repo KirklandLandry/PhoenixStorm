@@ -94,6 +94,7 @@ end
 function Player:hitByEnemyBullet()
 	if not self.playerSpawning and self.invincibilityTimer:percentComplete() >= 1 then 
 		effectManager:addEffect(EFFECT_TYPE.explosion128, self.x, self.y)
+		playSoundEffect(audioSources.smallExplosion)
 		self.lives = self.lives - 1
 		self:respawn()
 	end 
@@ -170,6 +171,7 @@ function Player:updateFiring(dt)
 	if getKeyDown("j") then 
 		-- only fire if the fire rate timer has expired 
 		if self.canFire then 
+			playSoundEffect(audioSources.shoot)
 			self.canFire = false
 			self.fireTimer:reset()
 			-- spawn bullets at each of the 4 guns
