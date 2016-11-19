@@ -27,8 +27,11 @@ effectManager = nil
 scoreManager = nil
 level1 = nil
 level1Boss= nil
+local screenShakeBounds = {min = -5, max = 5}
+local screenShakeActive = false
 
 local soundManager = "manager1"
+
 
 -- BASE LOAD
 function loadGame()
@@ -50,8 +53,11 @@ function loadGame()
 	spam_setloopsource(soundManager, audioSources.stage1, false)
 	spam_newsource(soundManager, audioSources.boss1, audioSources.boss1, 'stream')
 	spam_setloopsource(soundManager, audioSources.boss1, true)
-	spam_newsource(soundManager, audioSources.smallExplosion, audioSources.smallExplosion, 'static')
-	spam_setloopsource(soundManager, audioSources.smallExplosion, false)
+	spam_setvolume(soundManager, audioSources.boss1, 0.7)
+	spam_newsource(soundManager, audioSources.rumble, audioSources.rumble, 'static')
+	spam_setloopsource(soundManager, audioSources.rumble, true)
+	spam_newsource(soundManager, audioSources.rumbleComplete, audioSources.rumbleComplete, 'static')
+	spam_setloopsource(soundManager, audioSources.rumbleComplete, false)
 
 end
 
@@ -87,6 +93,7 @@ function updateStage(dt)
 	checkIfPlayerDead()
 	level1:update(dt)
 	if level1:isLevelComplete() then 
+		spam_stopsource(soundManager, audioSources.stage1)
 		gameState:push(GAME_STATES.boss)
 	end 
 end 
@@ -98,7 +105,22 @@ function updateBoss(dt)
 	effectManager:update(dt)
 	scoreManager:update(dt)
 	checkIfPlayerDead()
-	--level1:update(dt)
+	level1Boss:update(dt)
+
+	if level1Boss:isMovingToStartPosition() then 
+		if not spam_issourceplaying(soundManager, audioSources.rumble) then
+			spam_playsource(soundManager, audioSources.rumble)
+  		end
+		screenShakeActive = true
+	else 
+		spam_stopsource(soundManager, audioSources.rumble)
+		if screenShakeActive then 
+			spam_playsource(soundManager, audioSources.rumbleComplete)
+			spam_playsource(soundManager, audioSources.boss1)
+		end 
+		screenShakeActive = false
+	end 
+
 end 
 
 function updatePaused(dt)
@@ -142,16 +164,19 @@ function drawStage()
 	effectManager:draw()
 	scoreManager:draw() 
 	drawUi()	
-
 	--love.graphics.circle("line", player:getCentre().x, player:getCentre().y, player.shipHitRadius)
 end 
 
 function drawBoss()
+	if screenShakeActive then 
+		love.graphics.translate(math.random(screenShakeBounds.min, screenShakeBounds.max), math.random(screenShakeBounds.min, screenShakeBounds.max))
+	end 
+
 	level1:draw()
+	level1Boss:draw()
 	player:draw()
 	bulletManager:drawBullets()
-	enemyManager:draw()
-	level1Boss:draw()
+	enemyManager:draw()	
 	effectManager:draw()
 	scoreManager:draw()
 	drawUi()

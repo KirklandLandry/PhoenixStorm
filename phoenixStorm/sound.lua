@@ -7,7 +7,8 @@ audioSources ={
     smallExplosion = fxPath.."smallExplosion1.wav",
     shoot = fxPath.."shoot.wav",
     scoreToken = fxPath.."Picked Coin Echo.wav",
-
+    rumble = fxPath.."rumble.wav",
+    rumbleComplete = fxPath.."rumbleComplete.wav",
 }
 
 
