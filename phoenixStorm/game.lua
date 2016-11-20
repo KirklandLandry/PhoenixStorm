@@ -53,7 +53,7 @@ function loadGame()
 	spam_setloopsource(soundManager, audioSources.stage1, false)
 	spam_newsource(soundManager, audioSources.boss1, audioSources.boss1, 'stream')
 	spam_setloopsource(soundManager, audioSources.boss1, true)
-	spam_setvolume(soundManager, audioSources.boss1, 0.9)
+	--spam_setvolume(soundManager, audioSources.boss1, 0.9)
 	spam_newsource(soundManager, audioSources.rumble, audioSources.rumble, 'static')
 	spam_setloopsource(soundManager, audioSources.rumble, true)
 	spam_newsource(soundManager, audioSources.rumbleComplete, audioSources.rumbleComplete, 'static')
@@ -95,6 +95,7 @@ function updateStage(dt)
 	if level1:isLevelComplete() then 
 		spam_stopsource(soundManager, audioSources.stage1)
 		gameState:push(GAME_STATES.boss)
+		level1Boss.movingToStartPoint = true
 	end 
 end 
 
@@ -179,6 +180,7 @@ function drawBoss()
 	enemyManager:draw()	
 	effectManager:draw()
 	scoreManager:draw()
+	love.graphics.origin()
 	drawUi()
 end 
 
