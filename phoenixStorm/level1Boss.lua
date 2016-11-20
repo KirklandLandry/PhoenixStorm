@@ -54,7 +54,7 @@ function Level1Boss:getCentre()
 end 
 
 function Level1Boss:getHitbox()
-	return {x = self.x + 32, y = self.y, width = self.width - 32, height = self.height - 96}
+	return {x = self.x + 16, y = self.y, width = self.width - 32, height = self.height - 96}
 end 
 
 function Level1Boss:takeDamage()

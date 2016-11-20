@@ -25,13 +25,13 @@ function Level1:new ()
     self.__index = self
 
     -- level time 
-    o.levelProgress = 69
+    o.levelProgress = 0
     -- level ends / boss starts at 70 seconds
     o.bossTime = 70
     -- enemy spawn points
     o.levelTriggers = {
     	-- left to right arc through centre
-    	--[[self:addSpawnPointTrigger(ENEMY_TYPE.enemy1, 5, 0.5, 1),
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy1, 5, 0.5, 1),
     	-- right to left arc through centre
     	self:addSpawnPointTrigger(ENEMY_TYPE.enemy2, 5, 0.5, 5),
     	-- pop up in each coner and fire circle
@@ -58,7 +58,7 @@ function Level1:new ()
     	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Left, 4, 0.4, 55),
     	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 4, 0.4, 55),
     	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Left, 6, 0.3, 61),
-    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 6, 0.3, 61)]]
+    	self:addSpawnPointTrigger(ENEMY_TYPE.enemy6Right, 6, 0.3, 61)
 	}
 	o.activeLevelTriggers = {}	
 

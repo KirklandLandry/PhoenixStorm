@@ -44,8 +44,18 @@ function Player:new ()
 	o.guns = {}
 	o.guns["lowerLeft"] = newGun("lowerLeft", -o.shipWidth/2- 16 - 16, 0)
 	o.guns["lowerRight"] = newGun("lowerRight", o.shipWidth/2 + 16, 0)
-	o.guns["upperLeft"] = newGun("upperLeft", -o.shipWidth/2 + 4, -48)
-	o.guns["upperRight"] = newGun("upperRight", o.shipWidth/2 - 16 - 4, -48)
+	o.guns["upperLeft"] = newGun("upperLeft", -o.shipWidth/2 + 12, -48)
+	o.guns["upperRight"] = newGun("upperRight", o.shipWidth/2 - 16 - 12, -48)
+
+	o.gunRotationLeft = math.pi/2
+	o.gunRotationRight = math.pi/2
+
+
+    o.leftRotx = (math.cos(o.gunRotationLeft) * 20) - (math.sin(o.gunRotationLeft))
+	o.leftRoty = (math.sin(o.gunRotationLeft) * 20) + (math.cos(o.gunRotationLeft))
+
+	o.rightRotx = (math.cos(o.gunRotationRight) * 20) - (math.sin(o.gunRotationRight))
+	o.rightRoty = (math.sin(o.gunRotationRight) * 20) + (math.cos(o.gunRotationRight))
 
 	return o
 end
@@ -59,6 +69,17 @@ function newGun(name, _xOffset, _yOffset)
 end 
 
 function Player:update(dt)
+
+	self.gunRotationLeft = self.gunRotationLeft + (dt*4)
+	self.gunRotationRight = self.gunRotationRight - (dt*4)
+
+
+    self.leftRotx = (math.cos(self.gunRotationLeft) * 20) - (math.sin(self.gunRotationLeft))
+	self.leftRoty = (math.sin(self.gunRotationLeft) * 20) + (math.cos(self.gunRotationLeft))
+
+	self.rightRotx = (math.cos(self.gunRotationRight) * 20) - (math.sin(self.gunRotationRight))
+	self.rightRoty = (math.sin(self.gunRotationRight) * 20) + (math.cos(self.gunRotationRight))
+
 
 	self.invincibilityTimer:isComplete(dt)
 
@@ -111,8 +132,11 @@ function Player:draw()
 	-- draw the guns 
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerLeft"]	, centre.x + self.guns["lowerLeft"].xOffset 	, centre.y + self.guns["lowerLeft"].yOffset)
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerRight"]	, centre.x + self.guns["lowerRight"].xOffset 	, centre.y + self.guns["lowerRight"].yOffset)
-	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperLeft"]	, centre.x + self.guns["upperLeft"].xOffset 	, centre.y + self.guns["upperLeft"].yOffset)
-	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperRight"]	, centre.x + self.guns["upperRight"].xOffset 	, centre.y + self.guns["upperRight"].yOffset)
+
+
+ 
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperLeft"]	, centre.x +self.guns["upperLeft"].xOffset + self.leftRotx	, centre.y + self.guns["upperLeft"].yOffset + self.leftRoty)
+	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperRight"]	, centre.x + self.guns["upperRight"].xOffset + self.rightRotx	, centre.y + self.guns["upperRight"].yOffset + self.rightRoty)
 	-- draw the player hit circle
 	love.graphics.setColor(255,0,0)
 	love.graphics.circle("fill", centre.x, centre.y, self.shipHitRadius+1)
@@ -205,15 +229,15 @@ function Player:SpawnBullets()
 		BULLET_OWNER_TYPES.player)
 
 	bulletManager:newBullet(
-		centre.x + self.guns["upperLeft"].xOffset, 
-		centre.y + self.guns["upperLeft"].yOffset,
+		centre.x + self.guns["upperLeft"].xOffset + self.leftRotx, 
+		centre.y + self.guns["upperLeft"].yOffset + self.leftRoty,
 		0,
 		-self.bulletSpeed,
 		BULLET_OWNER_TYPES.player)
 
 	bulletManager:newBullet(
-		centre.x + self.guns["upperRight"].xOffset, 
-		centre.y + self.guns["upperRight"].yOffset,
+		centre.x + self.guns["upperRight"].xOffset + self.rightRotx, 
+		centre.y + self.guns["upperRight"].yOffset + self.leftRoty,
 		0,
 		-self.bulletSpeed,
 		BULLET_OWNER_TYPES.player)	
