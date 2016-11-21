@@ -65,7 +65,6 @@ function loadGame()
 	spam_newsource(soundManager, audioSources.rumbleComplete, audioSources.rumbleComplete, 'static')
 	spam_setloopsource(soundManager, audioSources.rumbleComplete, false)
 
-	print()
 end
 
 
@@ -89,6 +88,31 @@ function updateGame(dt)
 
 	love.audio.update(dt)
 end
+
+function resetGame()
+	screenShakeActive = false
+	bossExploding = false
+	bossExposionTimer = nil
+	fadeToWhiteDelayTimer = nil
+	fadeToWhiteTimer = nil
+	fadeToWhitePercentage = 0
+
+
+	gameState = Stack:new()
+	gameState:push(GAME_STATES.title)
+
+	player = Player:new()
+
+	level1 = Level1:new()
+	level1Boss = Level1Boss:new()
+
+	bulletManager = BulletManager:new()
+	effectManager = EffectManager:new()
+	scoreManager = ScoreManager:new()
+	enemyManager = EnemyManager:new()
+
+
+end 
 
 function updateStage(dt)
 	if not spam_issourceplaying(soundManager, audioSources.stage1) then
@@ -177,13 +201,15 @@ function updateTitle(dt)
 end	 
 
 function updateGameOver(dt)
-	if getKeyDown("h") then 
-
+	if getKeyDown("r") then 
+		resetGame()
 	end 
 end 
 
 function updateStageWin(dt)
-
+	if getKeyDown("r") then 
+		resetGame()
+	end 
 end 
 
 
