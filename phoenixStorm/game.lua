@@ -1,23 +1,10 @@
--- todo: make player guns (back OR front) rotate in circle? extra, do once complete
--- will want to revamp bullet pattern system to allow higher control over bullets / more advanced behaviour
 
--- could have a level stack, will just use a static level1
-
--- TODO: add a global sprite folder path to main?
--- TODO: add a bomb to clear all bullets
+-- maybe: add a bomb to clear all bullets
 -- just draw a circle and despawn anything that goes inside the circle
 -- grow the circle from the player position
 
--- screen shake while the boss is moving into position!!!
-
--- for saving files as json 
--- https://github.com/craigmj/json4lua
--- https://love2d.org/forums/viewtopic.php?f=4&t=10197
--- https://www.google.ca/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=love2d%20save%20system
-
 local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver", stageWin = "stageWin"}
 local gameState = nil
-
 
 local player = nil 
 
@@ -27,6 +14,9 @@ effectManager = nil
 scoreManager = nil
 level1 = nil
 level1Boss= nil
+
+local soundManager = "manager1"
+
 local screenShakeBounds = {min = -5, max = 5}
 local screenShakeActive = false
 local bossExploding = false
@@ -34,8 +24,6 @@ local bossExposionTimer = nil
 local fadeToWhiteDelayTimer = nil
 local fadeToWhiteTimer = nil
 local fadeToWhitePercentage = 0
-
-local soundManager = "manager1"
 
 
 -- BASE LOAD
@@ -64,7 +52,6 @@ function loadGame()
 	spam_setloopsource(soundManager, audioSources.rumble, true)
 	spam_newsource(soundManager, audioSources.rumbleComplete, audioSources.rumbleComplete, 'static')
 	spam_setloopsource(soundManager, audioSources.rumbleComplete, false)
-
 end
 
 

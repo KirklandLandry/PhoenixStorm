@@ -102,18 +102,14 @@ function ScoreManager:newScoreTokenGroup(_x, _y, _value)
 end 
 
 function ScoreManager:saveHighScores()
-    -- check if self.currentScore is a high score  
+    -- check if self.currentScore is a new high score 
     for i=1,#self.highScoresList do
-        --print(self.currentScore, self.highScoresList[i])
         if self.currentScore > self.highScoresList[i] then 
-            --print(self.highScoresList[i], i)
             -- shift down lower high scores
-            --local counter = i
             for j=#self.highScoresList,i+1,-1 do
-                --print(i,j,counter,self.highScoresList[j], self.highScoresList[counter])
                 self.highScoresList[j] = self.highScoresList[j-1]
-                --counter = counter + 1
             end
+            -- insert the new high score
             self.highScoresList[i] = self.currentScore
             break
         end 
@@ -128,14 +124,12 @@ function readInHighScores()
     local scoreList = {}
 
     local found = io.open(love.filesystem.getWorkingDirectory().."/highScores.txt", "r")
-
     if found then 
         local savedScores = found:read("*all")
         found:close()
         local counter = 1
         for score in string.gmatch(savedScores, '([^,]+)') do
             scoreList[counter] = tonumber(score)
-            --print(scoreList[counter])
             counter = counter + 1
         end
     else 
