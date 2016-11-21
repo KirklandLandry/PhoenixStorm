@@ -4,6 +4,7 @@ function ScoreManager:new ()
     setmetatable(o, self)
     self.__index = self
 
+    o.highScoresList = readInHighScores()
 
     o.scoreTokenSpriteSheet = love.graphics.newImage("assets/sprites/96x16coinSpriteSheet.png")
     o.scoreTokenSpriteSheet:setFilter("nearest", "nearest")
@@ -98,4 +99,44 @@ function ScoreManager:newScoreTokenGroup(_x, _y, _value)
     for i=1,10 do
         self:newScoreToken(_x + math.random(-20, 20), _y + math.random(-20,20), _value)
     end
+end 
+
+function ScoreManager:saveHighScores()
+    -- check if self.currentScore is a high score  
+    for i=1,#self.highScoresList do
+        print(self.currentScore, self.highScoresList[i])
+        if self.currentScore > self.highScoresList[i] then 
+            self.highScoresList[i] = self.currentScore
+            print(self.highScoresList[i], i)
+            break
+        end 
+    end
+    -- save to file
+    local highScoreFile = io.open(love.filesystem.getWorkingDirectory().."/highScores.txt", "w")
+    highScoreFile:write(self.highScoresList[1]..","..self.highScoresList[2]..","..self.highScoresList[3]..","..self.highScoresList[4]..","..self.highScoresList[5])
+    highScoreFile:close()
+end
+
+function readInHighScores()
+    local scoreList = {}
+
+    local found = io.open(love.filesystem.getWorkingDirectory().."/highScores.txt", "r")
+
+    if found then 
+        local savedScores = found:read("*all")
+        found:close()
+        local counter = 1
+        for score in string.gmatch(savedScores, '([^,]+)') do
+            scoreList[counter] = tonumber(score)
+            --print(scoreList[counter])
+            counter = counter + 1
+        end
+    else 
+        local myFile = io.open(love.filesystem.getWorkingDirectory().."/highScores.txt","w")
+        myFile:write("0,0,0,0,0")
+        myFile:close()
+        scoreList = {0,0,0,0,0}
+    end 
+
+    return scoreList
 end 

@@ -65,6 +65,7 @@ function loadGame()
 	spam_newsource(soundManager, audioSources.rumbleComplete, audioSources.rumbleComplete, 'static')
 	spam_setloopsource(soundManager, audioSources.rumbleComplete, false)
 
+	print()
 end
 
 
@@ -154,8 +155,9 @@ function updateBoss(dt)
 			if fadeToWhiteTimer:isComplete(dt) then 
 				gameState:push(GAME_STATES.stageWin)
 				spam_stopsource(soundManager, audioSources.rumble)
+				scoreManager:saveHighScores()
 			else 
-				fadeToWhitePercentage = fadeToWhiteTimer:percentComplete()
+				fadeToWhitePercentage = fadeToWhiteTimer:percentComplete()			
 			end 
 		end 
 
@@ -250,6 +252,9 @@ function drawStageWin()
 	drawText("press r to restart", 32, 64)
 	drawText("high scores", 32, 96)
 	-- list off top 5 high scores
+	for i=1,5 do
+		drawText(tostring(i)..": "..scoreManager.highScoresList[i], 32, 128+((i-1)*32))
+	end
 end 
 
 function drawUi()
