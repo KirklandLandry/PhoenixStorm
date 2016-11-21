@@ -104,10 +104,17 @@ end
 function ScoreManager:saveHighScores()
     -- check if self.currentScore is a high score  
     for i=1,#self.highScoresList do
-        print(self.currentScore, self.highScoresList[i])
+        --print(self.currentScore, self.highScoresList[i])
         if self.currentScore > self.highScoresList[i] then 
+            --print(self.highScoresList[i], i)
+            -- shift down lower high scores
+            --local counter = i
+            for j=#self.highScoresList,i+1,-1 do
+                --print(i,j,counter,self.highScoresList[j], self.highScoresList[counter])
+                self.highScoresList[j] = self.highScoresList[j-1]
+                --counter = counter + 1
+            end
             self.highScoresList[i] = self.currentScore
-            print(self.highScoresList[i], i)
             break
         end 
     end

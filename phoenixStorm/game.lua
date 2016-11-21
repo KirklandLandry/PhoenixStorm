@@ -271,6 +271,11 @@ end
 function drawGameOver()
 	drawText("game over", 32, 32)
 	drawText("press r to restart", 32, 64)
+	drawText("high scores", 32, 96)
+	-- list off top 5 high scores
+	for i=1,5 do
+		drawText(tostring(i)..": "..scoreManager.highScoresList[i], 32, 128+((i-1)*32))
+	end
 end 
 
 function drawStageWin()
@@ -312,6 +317,7 @@ end
 function checkIfPlayerDead()
 	if player.lives < 0 then 
 		gameState:push(GAME_STATES.gameOver)
+		scoreManager:saveHighScores()
 	end 
 end 
 
