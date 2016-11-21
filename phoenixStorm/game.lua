@@ -305,6 +305,8 @@ end
 function checkIfPlayerDead()
 	if player.lives < 0 then 
 		gameState:push(GAME_STATES.gameOver)
+		spam_stopsource(soundManager, audioSources.stage1)
+		spam_stopsource(soundManager, audioSources.boss1)
 		scoreManager:saveHighScores()
 	end 
 end 
