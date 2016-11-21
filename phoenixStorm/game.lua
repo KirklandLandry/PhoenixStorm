@@ -15,6 +15,8 @@ scoreManager = nil
 level1 = nil
 level1Boss= nil
 
+local gameIcon = nil
+
 local soundManager = "manager1"
 
 local screenShakeBounds = {min = -5, max = 5}
@@ -52,6 +54,8 @@ function loadGame()
 	spam_setloopsource(soundManager, audioSources.rumble, true)
 	spam_newsource(soundManager, audioSources.rumbleComplete, audioSources.rumbleComplete, 'static')
 	spam_setloopsource(soundManager, audioSources.rumbleComplete, false)
+
+	gameIcon = love.graphics.newImage("assets/sprites/firepunch_alpha.png")
 end
 
 
@@ -247,6 +251,9 @@ end
 function drawTitle()
 	drawText("phoenix storm", 144, 64)
 	drawText("press j to start", 122, 96)
+	love.graphics.draw(gameIcon, 180, 128)
+	drawText("use wasd to move", 122, 288)
+	drawText("use j to shoot", 144, 320)
 end	 
 
 function drawGameOver()
