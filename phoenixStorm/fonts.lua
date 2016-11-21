@@ -20,7 +20,6 @@ function loadFonts()
     textTilesetQuads["#"] = love.graphics.newQuad(16*3, 0, 16, 16, tilesetWidth, tilesetHeight)
     textTilesetQuads["-"] = love.graphics.newQuad(16*5, 16, 16, 16, tilesetWidth, tilesetHeight)
 
-
     local counter = 1
     for i=string.byte("a"),string.byte("g") do
         textTilesetQuads[string.char(i)] = love.graphics.newQuad(counter * 16, 64, 16, 16, tilesetWidth, tilesetHeight)

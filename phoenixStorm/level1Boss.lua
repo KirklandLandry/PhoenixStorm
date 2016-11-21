@@ -37,7 +37,7 @@ function Level1Boss:new ()
     o.phase2HorizontalTimer = Timer:new(0.85, TimerModes.repeating)
     o.phase2SwitchTimer = Timer:new(4, TimerModes.repeating)
     o.phase2BulletSpeed = 230
-    -- phase 3 variables
+    -- phase 3 variables (unused)
     o.phase3Health = 2000
 
     o.defeated = false
@@ -141,7 +141,6 @@ function Level1Boss:takeDamage()
 			self.defeated = true 
 		end 
 	--elseif self.currentPhase == BOSS_PHASE.three then 
-		
 	end 
 end 
 

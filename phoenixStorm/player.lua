@@ -4,7 +4,6 @@ function Player:new ()
 	setmetatable(o, self)
 	self.__index = self
 	
-
 	o.shipHitRadius = 2
 	o.lives = 3 
 	o.playerSpawning = false
@@ -73,7 +72,6 @@ function Player:update(dt)
 	self.gunRotationLeft = self.gunRotationLeft + (dt*4)
 	self.gunRotationRight = self.gunRotationRight - (dt*4)
 
-
     self.leftRotx = (math.cos(self.gunRotationLeft) * 20) - (math.sin(self.gunRotationLeft))
 	self.leftRoty = (math.sin(self.gunRotationLeft) * 20) + (math.cos(self.gunRotationLeft))
 
@@ -129,12 +127,10 @@ function Player:draw()
 	local centre = self:getCentre()
 	-- draw the player sprite
 	love.graphics.draw(self.shipSprite, self.x, self.y)
-	-- draw the guns 
+	-- draw the lower guns 
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerLeft"]	, centre.x + self.guns["lowerLeft"].xOffset 	, centre.y + self.guns["lowerLeft"].yOffset)
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["lowerRight"]	, centre.x + self.guns["lowerRight"].xOffset 	, centre.y + self.guns["lowerRight"].yOffset)
-
-
- 
+ 	-- draw the upper guns
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperLeft"]	, centre.x +self.guns["upperLeft"].xOffset + self.leftRotx	, centre.y + self.guns["upperLeft"].yOffset + self.leftRoty)
 	love.graphics.draw(self.gunSpriteSheet, self.gunSpriteSheetQuads["upperRight"]	, centre.x + self.guns["upperRight"].xOffset + self.rightRotx	, centre.y + self.guns["upperRight"].yOffset + self.rightRoty)
 	-- draw the player hit circle
@@ -161,18 +157,6 @@ end
 function Player:boundaryCollisions()
 	local centre = self:getCentre()
 	-- check and resolve collision with left and right wall
-	--[[if self.x < 0 then 
-		self.x = 0
-	elseif self.x + self.shipWidth > screenWidth then 
-		self.x = screenWidth - self.shipWidth
-	end 	
-	-- check and resolve collision with top and bottom wall
-	if self.y < 0 then 
-		self.y = 0
-	elseif self.y + self.shipHeight > screenHeight then 
-		self.y = screenHeight - self.shipHeight
-	end ]]
-
 	if self.x + self.shipWidth/2 < 0 then 
 		self.x = -self.shipWidth/2
 	elseif self.x + self.shipWidth/2 > screenWidth then 
@@ -184,7 +168,6 @@ function Player:boundaryCollisions()
 	elseif self.y + self.shipHeight/2 > screenHeight then 
 		self.y = screenHeight - self.shipHeight/2
 	end
-
 end 
 
 function Player:updateFiring(dt)
@@ -241,7 +224,6 @@ function Player:SpawnBullets()
 		0,
 		-self.bulletSpeed,
 		BULLET_OWNER_TYPES.player)	
-
 end 
 
 -- get the centre relative to the centre of the ship sprite based on current position

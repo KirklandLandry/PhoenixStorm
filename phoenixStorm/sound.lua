@@ -189,15 +189,12 @@ function love.audio.play(what, how, loop)
     local src = what
     if type(what) ~= "userdata" or not what:typeOf("Source") then
 
-
-
         src = love.audio.newSource(what, how)
         src:setLooping(loop or false)
 
         -- to prevent collecting too many score tokens and clipping the audio
         if what == audioSources.scoreToken then 
             if audioUpdateTime - lastScoreTokenPlayTime < currentScoreTokenAudioLevelThreshold then 
-                --print("dev"..tostring(currentScoreTokenAudioLevel))
                 currentScoreTokenAudioLevel = currentScoreTokenAudioLevel - currentScoreTokenAudioLevelDecrement
                 if currentScoreTokenAudioLevel < 0.05 then 
                     currentScoreTokenAudioLevel = 0.5
@@ -205,7 +202,6 @@ function love.audio.play(what, how, loop)
                 src:setVolume(currentScoreTokenAudioLevel)
             else 
                 currentScoreTokenAudioLevel = 1
-                --print("reset")
             end 
             lastScoreTokenPlayTime = audioUpdateTime
         end 

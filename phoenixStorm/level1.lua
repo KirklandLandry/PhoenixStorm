@@ -14,11 +14,6 @@ enemy5Right = "enemy5Right",
 enemy6Left = "enemy6Left",
 enemy6Right = "enemy6Right"}
 
--- add white speed lines for the illusion of speed
--- would need a table reverse function (special since it would have to flip every 2)
-
--- NOTE: Boss entry will occur at 70 seconds. by then the sun is at the bottom
-
 function Level1:new ()
     local o = {}
     setmetatable(o, self)
@@ -66,7 +61,6 @@ function Level1:new ()
     o.backgroundElementSprites[BACKGROUND_ELEMENT_TYPE.yellowSun] = love.graphics.newImage("assets/sprites/512x512yellowSun.png")
     o.backgroundElementSprites[BACKGROUND_ELEMENT_TYPE.yellowSun]:setFilter("nearest", "nearest")
 
-
     o.backgroundElementList = {
         bottomLayer = {},
         topLayer = {}
@@ -105,8 +99,6 @@ function Level1:update(dt)
     		end 
     	end 
     end 
-
-
     -- update all the scrolling for background visuals
     count = #self.backgroundElementList.bottomLayer
     for i=count,1,-1 do
@@ -122,7 +114,6 @@ function Level1:update(dt)
             table.remove(self.backgroundElementList.topLayer, i)
         end 
     end
-    -- update spawn points
 end 
 
 function Level1:draw()
@@ -191,7 +182,6 @@ function enemySpawnSelector(enemyType)
 		SpawnEnemy6(topRightBottomLeftSCurve(0, -96))
 	end 
 end 
-
 
 
 function SpawnEnemy1()

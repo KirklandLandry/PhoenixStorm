@@ -48,10 +48,8 @@ end
 -- called once per frame
 function love.update(dt)
 	updateFramerateLock()
-
 	-- prevent large jumps in framerate
 	if dt > 0.2 then dt = 0.016 end 
-
 	updateGame(dt)
 end 
 

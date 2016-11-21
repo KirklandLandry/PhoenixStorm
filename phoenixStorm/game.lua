@@ -72,7 +72,6 @@ function updateGame(dt)
 	elseif gameState:peek() == GAME_STATES.stageWin then 
 		updateStageWin(dt)
 	end 
-
 	love.audio.update(dt)
 end
 
@@ -97,8 +96,6 @@ function resetGame()
 	effectManager = EffectManager:new()
 	scoreManager = ScoreManager:new()
 	enemyManager = EnemyManager:new()
-
-
 end 
 
 function updateStage(dt)
@@ -134,10 +131,9 @@ function updateBoss(dt)
 		screenShakeActive = true 
 		spam_playsource(soundManager, audioSources.rumble)
 		spam_stopsource(soundManager, audioSources.boss1)
-
+		-- setup white fade overlay timers 
 		fadeToWhiteDelayTimer = Timer:new(5, TimerModes.single)
 		fadeToWhiteTimer = Timer:new(5, TimerModes.single)
-
 	end 
 
 
@@ -171,9 +167,7 @@ function updateBoss(dt)
 				fadeToWhitePercentage = fadeToWhiteTimer:percentComplete()			
 			end 
 		end 
-
 	end 
-
 end 
 
 function updatePaused(dt)
