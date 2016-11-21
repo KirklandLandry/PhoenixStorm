@@ -24,11 +24,11 @@ function Level1Boss:new ()
     o.phaseDelayActive = false
 
     -- phase 1 variables 
-    o.phase1Health = 1000
+    o.phase1Health = 1200
     o.phase1CircleTimer = Timer:new(0.3, TimerModes.repeating)
     o.phase1DegreeIncrement = 0
     -- phase 2 variables 
-    o.phase2Health = 1700
+    o.phase2Health = 1900
     o.phase2BurstTimer = Timer:new(0.1, TimerModes.repeating)
     o.phase2OffsetTimer = Timer:new(0.2, TimerModes.repeating)
     o.phase2Offset = 0
@@ -37,6 +37,10 @@ function Level1Boss:new ()
     o.phase2HorizontalTimer = Timer:new(0.85, TimerModes.repeating)
     o.phase2SwitchTimer = Timer:new(4, TimerModes.repeating)
     o.phase2BulletSpeed = 230
+    -- phase 3 variables
+    o.phase3Health = 2000
+
+    o.defeated = false
 
     o.eventQueue = Queue:new()
 
@@ -61,8 +65,7 @@ function Level1Boss:update(dt)
 			elseif self.currentPhase == BOSS_PHASE.two then 
 				self:updatePhase2(dt) 
 			end
-		end 
-		 
+		end 	 
 	end 
 end 
 
@@ -133,10 +136,13 @@ function Level1Boss:takeDamage()
 		self.phase2Health = self.phase2Health - 1
 		if self.phase2Health <= 0 then 
 			self.currentPhase = BOSS_PHASE.three
-			self.phaseDelayActive = true 
-			self.phaseDelayTimer:reset(3)
+			--self.phaseDelayActive = true 
+			--self.phaseDelayTimer:reset(3)
+			self.defeated = true 
 		end 
-	end  
+	--elseif self.currentPhase == BOSS_PHASE.three then 
+		
+	end 
 end 
 
 function Level1Boss:circleBurstOutwards(degree, offset, speed)
@@ -166,4 +172,8 @@ function Level1Boss:horizontalWithGap(speed)
 		end 
 		
 	end
+end 
+
+function Level1Boss:isDefeated()
+	return self.defeated
 end 

@@ -21,7 +21,6 @@ function EnemyManager:new ()
 	o.enemySprites[ENEMY_SHIP_SPRITES.mediumEnemy1] = love.graphics.newImage("assets/sprites/64x64mediumEnemy1.png")
 	o.enemySprites[ENEMY_SHIP_SPRITES.mediumEnemy1]:setFilter("nearest", "nearest")
 
-
 	o.enemyList = {}
 
 	return o

@@ -15,7 +15,7 @@
 -- https://love2d.org/forums/viewtopic.php?f=4&t=10197
 -- https://www.google.ca/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=love2d%20save%20system
 
-local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver"}
+local GAME_STATES = {stage = "stage", boss = "boss", paused = "paused", title = "title", gameOver = "gameOver", stageWin = "stageWin"}
 local gameState = nil
 
 
@@ -29,6 +29,11 @@ level1 = nil
 level1Boss= nil
 local screenShakeBounds = {min = -5, max = 5}
 local screenShakeActive = false
+local bossExploding = false
+local bossExposionTimer = nil
+local fadeToWhiteDelayTimer = nil
+local fadeToWhiteTimer = nil
+local fadeToWhitePercentage = 0
 
 local soundManager = "manager1"
 
@@ -51,6 +56,7 @@ function loadGame()
 	spam_newmanager(soundManager)
 	spam_newsource(soundManager, audioSources.stage1, audioSources.stage1, 'stream')
 	spam_setloopsource(soundManager, audioSources.stage1, false)
+	spam_setvolume(soundManager, audioSources.stage1, 0.9)
 	spam_newsource(soundManager, audioSources.boss1, audioSources.boss1, 'stream')
 	spam_setloopsource(soundManager, audioSources.boss1, true)
 	--spam_setvolume(soundManager, audioSources.boss1, 0.9)
@@ -76,6 +82,8 @@ function updateGame(dt)
 		updateTitle(dt)
 	elseif gameState:peek() == GAME_STATES.gameOver then 
 		updateGameOver(dt)
+	elseif gameState:peek() == GAME_STATES.stageWin then 
+		updateStageWin(dt)
 	end 
 
 	love.audio.update(dt)
@@ -108,18 +116,49 @@ function updateBoss(dt)
 	checkIfPlayerDead()
 	level1Boss:update(dt)
 
-	if level1Boss:isMovingToStartPosition() then 
+	if not bossExploding and level1Boss:isDefeated() then 
+		bossExploding = true 
+		bossExposionTimer = Timer:new(0.3, TimerModes.repeating)
+		screenShakeActive = true 
+		spam_playsource(soundManager, audioSources.rumble)
+		spam_stopsource(soundManager, audioSources.boss1)
+
+		fadeToWhiteDelayTimer = Timer:new(5, TimerModes.single)
+		fadeToWhiteTimer = Timer:new(5, TimerModes.single)
+
+	end 
+
+
+	if level1Boss:isMovingToStartPosition() and not bossExploding then 
 		if not spam_issourceplaying(soundManager, audioSources.rumble) then
 			spam_playsource(soundManager, audioSources.rumble)
   		end
 		screenShakeActive = true
-	else 
+	elseif not level1Boss:isMovingToStartPosition() and not bossExploding then 
 		spam_stopsource(soundManager, audioSources.rumble)
 		if screenShakeActive then 
 			spam_playsource(soundManager, audioSources.rumbleComplete)
 			spam_playsource(soundManager, audioSources.boss1)
 		end 
 		screenShakeActive = false
+	end 
+
+	if bossExploding then 
+		if bossExposionTimer:isComplete(dt) then 
+			local pos = level1Boss:getHitbox()
+			effectManager:addEffect(EFFECT_TYPE.explosion, math.random(pos.x, pos.x + pos.width), math.random(pos.y, pos.y + pos.height))
+			playSoundEffect(audioSources.smallExplosion)
+		end 
+
+		if fadeToWhiteDelayTimer:isComplete(dt) then 
+			if fadeToWhiteTimer:isComplete(dt) then 
+				gameState:push(GAME_STATES.stageWin)
+				spam_stopsource(soundManager, audioSources.rumble)
+			else 
+				fadeToWhitePercentage = fadeToWhiteTimer:percentComplete()
+			end 
+		end 
+
 	end 
 
 end 
@@ -141,6 +180,10 @@ function updateGameOver(dt)
 	end 
 end 
 
+function updateStageWin(dt)
+
+end 
+
 
 -- BASE DRAW 
 function drawGame()
@@ -154,6 +197,8 @@ function drawGame()
 		drawTitle()
 	elseif gameState:peek() == GAME_STATES.gameOver then 
 		drawGameOver()
+	elseif gameState:peek() == GAME_STATES.stageWin then 
+		drawStageWin()
 	end 
 end
 
@@ -182,6 +227,8 @@ function drawBoss()
 	scoreManager:draw()
 	love.graphics.origin()
 	drawUi()
+	love.graphics.setColor(255, 255, 255, 255*fadeToWhitePercentage)
+	love.graphics.rectangle("fill", 0, 0, screenWidth, screenHeight)
 end 
 
 function drawPaused()
@@ -189,12 +236,20 @@ function drawPaused()
 end 
 
 function drawTitle()
-	drawText("press j to start", 32, 32)
+	drawText("phoenix storm", 144, 64)
+	drawText("press j to start", 122, 96)
 end	 
 
 function drawGameOver()
 	drawText("game over", 32, 32)
-	drawText("press h to restart", 32, 64)
+	drawText("press r to restart", 32, 64)
+end 
+
+function drawStageWin()
+	drawText("stage complete!", 32, 32)
+	drawText("press r to restart", 32, 64)
+	drawText("high scores", 32, 96)
+	-- list off top 5 high scores
 end 
 
 function drawUi()
